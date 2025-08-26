@@ -11,7 +11,7 @@
     <div class="error">{{ error }}</div>
   }
   <button mat-flat-button color="primary" (click)="loginWithGoogle()" [disabled]="loading">
-    <mat-icon>login</mat-icon>
+    <mat-icon fontSet="material-symbols-outlined">login</mat-icon>
     @if (loading) {
       <span>Signing in...</span>
     } @else {

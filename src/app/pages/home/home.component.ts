@@ -2,11 +2,13 @@ import {Component} from '@angular/core';
 import {MatButton} from '@angular/material/button';
 import {AuthService} from '../../services/auth.service';
 import supabase from '../../utils/supabase';
+import {HomeCardComponent} from '../../components/home-card/home-card.component';
 
 @Component({
   selector: 'app-home',
   imports: [
-    MatButton
+    MatButton,
+    HomeCardComponent
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'

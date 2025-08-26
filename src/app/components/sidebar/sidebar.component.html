@@ -1,7 +1,7 @@
 <div class="sidebar-container">
   <div>
     <div class="sidebar-logo" [ngClass]="{ 'collapsed': collapsed }">
-      <img src="logo.svg" alt="Logo"/>
+      <img src="logo.jpeg" alt="Logo"/>
     </div>
     <mat-nav-list>
       @for (section of sections; track $index) {
@@ -32,7 +32,7 @@
               [ngClass]="{ 'collapsed': collapsed }"
               mat-list-item [routerLink]="route.path" routerLinkActive #rla="routerLinkActive"
               [activated]="rla.isActive">
-              <mat-icon matListItemIcon>{{ route.icon }}</mat-icon>
+              <mat-icon matListItemIcon fontSet="material-symbols-outlined">{{ route.icon }}</mat-icon>
               @if (!collapsed) {
                 <span matListItemTitle
                       [style.display]="collapsed ? 'none' : ''"

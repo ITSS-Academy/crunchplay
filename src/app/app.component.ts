@@ -14,29 +14,5 @@ import {HeaderComponent} from './components/header/header.component';
 })
 export class AppComponent {
   title = 'Relsvido';
-  collapsed = signal(false);
-  isSmallScreen: boolean = false;
-  sidebarMode = signal<MatDrawerMode>('side');
 
-  sidebarWidth = computed(() => this.collapsed() ? 'fit-content' : '240px');
-
-
-  constructor(private breakpointObserver: BreakpointObserver) {
-    this.breakpointObserver.observe(['(max-width: 599px)']).subscribe(result => {
-      this.collapsed.set(result.matches);
-      this.sidebarMode.set(result.matches ? 'over' : 'side');
-      this.isSmallScreen = result.matches;
-    });
-  }
-
-  calculateMargin() {
-    if (this.isSmallScreen) {
-      return '0';
-    }
-    return this.collapsed() ? '100px' : '240px';
-  }
-
-  toggleSidebar() {
-    this.collapsed.set(!this.collapsed())
-  }
 }

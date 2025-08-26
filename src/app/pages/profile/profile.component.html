@@ -22,11 +22,11 @@
       <mat-icon class="example-tab-icon">thumb_up</mat-icon>
       Playlists
     </ng-template>
-    @if (selectedIndex == 1) {
-      <ng-container>
-        <app-playlist></app-playlist>
-      </ng-container>
-    }
+    fd78ce4e   @if (selectedIndex == 1) {
+    <ng-container>
+      <app-playlist></app-playlist>
+    </ng-container>
+  }
   </mat-tab>
 
   <mat-tab>
@@ -34,7 +34,7 @@
       <mat-icon class="example-tab-icon">thumb_up</mat-icon>
       Liked Videos
     </ng-template>
-    @if (selectedIndex == 3) {
+    @if (selectedIndex == 2) {
       <ng-container>
         <app-liked-videos></app-liked-videos>
       </ng-container>
