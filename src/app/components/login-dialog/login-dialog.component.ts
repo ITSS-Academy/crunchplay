@@ -2,7 +2,7 @@ import {Component} from '@angular/core';
 import {MatDialogRef, MatDialogModule} from '@angular/material/dialog';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
-import {AuthService} from '../../services/auth.service';
+import {AuthService} from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-login-dialog',

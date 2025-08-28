@@ -1,19 +1,19 @@
 import {Component, computed, signal} from '@angular/core';
-import {HeaderComponent} from "../../components/header/header.component";
 import {MatDrawerMode, MatSidenav, MatSidenavContainer, MatSidenavContent} from "@angular/material/sidenav";
 import {RouterOutlet} from "@angular/router";
 import {SidebarComponent} from "../../components/sidebar/sidebar.component";
 import {BreakpointObserver} from '@angular/cdk/layout';
+import {HeaderComponent} from '../../components/header/header.component';
 
 @Component({
   selector: 'app-main',
   imports: [
-    HeaderComponent,
     MatSidenav,
     MatSidenavContainer,
     MatSidenavContent,
     RouterOutlet,
-    SidebarComponent
+    SidebarComponent,
+    HeaderComponent
   ],
   templateUrl: './main.component.html',
   styleUrl: './main.component.scss'

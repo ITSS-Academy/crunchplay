@@ -10,11 +10,11 @@ import {StudioSidebarComponent} from '../../components/studio-sidebar/studio-sid
   selector: 'app-studio',
   imports: [
     RouterOutlet,
-    HeaderComponent,
     MatSidenav,
     MatSidenavContainer,
     MatSidenavContent,
     SidebarComponent,
+    HeaderComponent,
     StudioSidebarComponent
   ],
   templateUrl: './studio.component.html',

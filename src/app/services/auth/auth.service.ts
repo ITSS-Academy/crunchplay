@@ -1,19 +1,30 @@
 import {Injectable} from '@angular/core';
-import supabase from '../utils/supabase';
+import supabase from '../../utils/supabase';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
+
   constructor() {
   }
 
   async login() {
     try {
-      await supabase.auth.signInWithOAuth({
+      const {data, error} = await supabase.auth.signInWithOAuth({
         provider: "google",
+        options: {
+          skipBrowserRedirect: true,
+          redirectTo: window.location.origin + '/auth/callback'
+        }
       });
+      if (data?.url) {
+        window.open(data.url, '_blank', 'width=500,height=600');
+      }
+      if (error) {
+        console.error('Login error:', error);
+      }
     } catch (error) {
       console.error('Login error:', error);
     }
@@ -27,5 +38,10 @@ export class AuthService {
     const {data, error} = await supabase.auth.getSession();
     console.log('AuthService.isLoggedIn', {data, error});
     return !!data?.session && !error;
+  }
+
+  async logout() {
+    await supabase.auth.signOut();
+
   }
 }

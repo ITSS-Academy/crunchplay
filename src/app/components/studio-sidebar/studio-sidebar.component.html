@@ -9,29 +9,28 @@
           <h4 matSubheader class="section-title">{{ section.header }}</h4>
         }
 
-        @if (!collapsed) {
-          @for (route of section.routes; track route) {
-            <a
-              [ngClass]="{ 'collapsed': collapsed }"
-              mat-list-item [routerLink]="route.path" routerLinkActive #rla="routerLinkActive"
-              [activated]="rla.isActive">
-              <mat-icon
-                matListItemIcon
-                [ngClass]="rla.isActive? 'active-icon' : ''"
+        @for (route of section.routes; track route) {
+          <a
+            [ngClass]="{ 'collapsed': collapsed }"
+            mat-list-item [routerLink]="route.path" routerLinkActive #rla="routerLinkActive"
+            [activated]="rla.isActive">
+            <mat-icon
+              matListItemIcon
+              [ngClass]="rla.isActive? 'active-icon' : ''"
 
-                [fontSet]="rla.isActive ? '' : 'material-symbols-outlined'"
-              >
-                {{ route.icon }}
-              </mat-icon>
-              @if (!collapsed) {
-                <span matListItemTitle
-                      [ngClass]="rla.isActive? 'active-font' : ''"
-                      [style.display]="collapsed ? 'none' : ''"
-                > {{ route.label }} </span>
-              }
-            </a>
-          }
+              [fontSet]="rla.isActive ? '' : 'material-symbols-outlined'"
+            >
+              {{ route.icon }}
+            </mat-icon>
+            @if (!collapsed) {
+              <span matListItemTitle
+                    [ngClass]="rla.isActive? 'active-font' : ''"
+                    [style.display]="collapsed ? 'none' : ''"
+              > {{ route.label }} </span>
+            }
+          </a>
         }
+
 
       }
 

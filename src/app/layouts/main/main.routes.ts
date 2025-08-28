@@ -34,6 +34,11 @@ export const mainRoutes: Routes = [
         }
       },
       {
+        path: 'video-detail/:videoId',
+        loadComponent: () => import('../../pages/video-detail/video-detail.component').then(m => m.VideoDetailComponent),
+        data: {}
+      },
+      {
         path: 'following',
         loadChildren: () => import('../../pages/following/following.routes').then(m => m.followingRoutes),
         data: {
