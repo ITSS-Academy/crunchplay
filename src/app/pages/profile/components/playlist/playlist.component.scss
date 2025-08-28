@@ -1,0 +1,30 @@
+.playlist-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  padding: 16px;
+}
+
+.playlist-card {
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+
+  &:hover {
+    transform: translateY(-5px);
+  }
+
+  img {
+    border-radius: 8px;
+    object-fit: cover;
+  }
+
+  h3 {
+    font-size: 1rem;
+    margin: 8px 0;
+  }
+
+  p {
+    font-size: 0.9rem;
+    color: gray;
+  }
+}

@@ -1,3 +1,48 @@
-.example-tab-icon {
-  margin-right: 8px;
+.channel-header {
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  position: relative; // để dễ đặt avatar chồng lên banner
+
+  .banner {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .channel-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    position: absolute;
+    bottom: 1px;  // kéo avatar + info xuống dưới banner
+    left: 1px;
+
+    .avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 1px solid white; // giống YouTube
+    }
+
+    .details {
+      display: flex;
+      flex-direction: column;
+
+      .channel-name {
+        font-size: 22px;
+        font-weight: 600;
+        color: aqua;
+
+      }
+
+      .subscribers {
+        color: gray;
+        margin-bottom: 8px;
+      }
+    }
+  }
 }

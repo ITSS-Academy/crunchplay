@@ -1,0 +1,22 @@
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+  padding: 16px;
+}
+
+.video-card {
+  cursor: pointer;
+
+  .video-title {
+    font-size: 16px;
+    font-weight: 500;
+    margin: 8px 0;
+  }
+
+  .video-meta {
+    font-size: 12px;
+    color: gray;
+  }
+
+}

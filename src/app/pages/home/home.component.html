@@ -1,7 +1,24 @@
-<p>home works!</p>
 
-<app-home-card></app-home-card>
 
-<!--<button (click)="login()" mat-button>login</button>-->
-
-<!--<button (click)="printIdToken()">id</button>-->
+<div class="home-wrapper">
+  <div class="video-grid">
+    <mat-card *ngFor="let v of videos" class="video-card" appearance="outlined">
+      <img mat-card-image [src]="v.thumbnail" [alt]="v.title" />
+      <mat-card-content>
+        <h3 class="title">{{ v.title }}</h3>
+        <p class="meta">{{ v.channel }} • {{ v.views }} • {{ v.time }}</p>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-icon-button>
+          <mat-icon>thumb_up</mat-icon>
+        </button>
+        <button mat-icon-button>
+          <mat-icon>share</mat-icon>
+        </button>
+        <button mat-icon-button>
+          <mat-icon>more_vert</mat-icon>
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div>
