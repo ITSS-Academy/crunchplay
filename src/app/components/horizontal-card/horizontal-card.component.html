@@ -1,0 +1,22 @@
+<mat-card class="video-card" [routerLink]="['/video-detail', videoDetail.id]" appearance="outlined">
+  <div style="display: flex; flex-direction: column; gap: 1rem">
+    <div class="video-thumbnail-container">
+      <img mat-card-image [src]="convertToSupabaseUrl(videoDetail.thumbnailPath, 'thumbnail')"
+           [alt]="videoDetail.title"/>
+      <span class="duration-badge">{{ videoDetail.duration | duration }}</span>
+    </div>
+    <mat-card-content>
+      <div class="video-info-row">
+        <mat-icon class="profile-icon">person</mat-icon>
+        <span class="uploader">{{ videoDetail.profile?.username || videoDetail.profileId }}</span>
+      </div>
+      <div class="video-title">{{ videoDetail.title || 'Untitled' }}</div>
+      <div class="video-meta">
+      <span><mat-icon>visibility</mat-icon>
+        {{ videoDetail.viewCount | number }}</span>
+        <span><mat-icon>calendar_today</mat-icon>
+          {{ videoDetail.createdAt | date:'mediumDate' }}</span>
+      </div>
+    </mat-card-content>
+  </div>
+</mat-card>

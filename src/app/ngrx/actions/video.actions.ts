@@ -30,3 +30,22 @@ export const createVideoInfoSuccess = createAction('[Video] Create Video Info Su
 export const createVideoInfoFailure = createAction('[Video] Create Video Info Failure', props<{
   error: any,
 }>());
+
+export const getLatestVideos = createAction('[Video] Get Latest Videos', props<{
+  page: number
+}>())
+export const getLatestVideosSuccess = createAction('[Video] Get Latest Videos Success', props<
+  {
+    videos: VideoModel[],
+    totalCount: number
+  }>());
+export const getLatestVideosFailure = createAction('[Video] Get Latest Videos Failure', props<{
+  error: any,
+}>());
+
+export const getRecommendedVideos = createAction('[Video] Get Recommended Videos')
+export const getRecommendedVideosSuccess = createAction('[Video] Get Recommended Videos Success', props<
+  { videos: VideoModel[] }>());
+export const getRecommendedVideosFailure = createAction('[Video] Get Recommended Videos Failure', props<{
+  error: any,
+}>());

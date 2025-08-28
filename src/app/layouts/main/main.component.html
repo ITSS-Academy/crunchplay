@@ -1,6 +1,5 @@
 <mat-sidenav-container>
-  <mat-sidenav class="mat-elevation-z1" [opened]="!isSmallScreen ? true : !collapsed()"
-               (closedStart)="collapsed.set(true)"
+  <mat-sidenav class="mat-elevation-z1" #drawer [opened]="!isVideoDetailPage && (!isSmallScreen ? true : !collapsed())"
                [mode]="sidebarMode()"
                [style.width]="this.sidebarWidth()"
                [style.transition]="!isSmallScreen? 'all 0.3s ease-in-out' : 'none'"

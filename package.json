@@ -24,6 +24,7 @@
     "@ngrx/store": "^19.2.1",
     "@supabase/supabase-js": "^2.55.0",
     "hls.js": "^1.6.10",
+    "ngx-skeleton-loader": "^11.2.1",
     "plyr": "^3.7.8",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",

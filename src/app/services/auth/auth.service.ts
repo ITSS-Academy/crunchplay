@@ -14,13 +14,13 @@ export class AuthService {
     try {
       const {data, error} = await supabase.auth.signInWithOAuth({
         provider: "google",
-        options: {
-          skipBrowserRedirect: true,
-          redirectTo: window.location.origin + '/auth/callback'
-        }
+        // options: {
+        //   // skipBrowserRedirect: true,
+        //   // redirectTo: window.location.origin + '/auth/callback'
+        // }
       });
       if (data?.url) {
-        window.open(data.url, '_blank', 'width=500,height=600');
+        // window.open(data.url, '_blank', 'width=500,height=600');
       }
       if (error) {
         console.error('Login error:', error);

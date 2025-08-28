@@ -1,6 +1,17 @@
 import {VideoModel} from '../../models/video.model';
 
 export interface VideoState {
+  isGettingLatest: boolean,
+  isGetLatestSuccess: boolean,
+  isGetLatestError: any,
+  latestVideos: VideoModel[],
+  canGetMoreLatest: boolean,
+
+  isGettingRecommended: boolean,
+  isGetRecommendedSuccess: boolean,
+  isGetRecommendedError: any,
+  recommendedVideos: VideoModel[],
+
   videoDetail: VideoModel,
   isCreating: boolean,
   isCreateError: any,

@@ -63,3 +63,43 @@ export const createVideoInfo = createEffect(
   },
   {functional: true}
 );
+
+export const getLatestVideos = createEffect(
+  (actions$ = inject(Actions), videoService = inject(VideoService)) => {
+    return actions$.pipe(
+      ofType(VideoActions.getLatestVideos),
+      exhaustMap((action) =>
+        videoService.getLatestVideos(action.page).pipe(
+          map((res) => VideoActions.getLatestVideosSuccess({
+            videos: res.videos,
+            totalCount: res.pagination.totalCount
+          })),
+          catchError((error: any) =>
+            of(VideoActions.getLatestVideosFailure({error: error}))
+          )
+        )
+      )
+    );
+  },
+  {functional: true}
+);
+
+export const getRecommendedVideos = createEffect(
+  (actions$ = inject(Actions), videoService = inject(VideoService)) => {
+    return actions$.pipe(
+      ofType(VideoActions.getRecommendedVideos),
+      exhaustMap(() =>
+        videoService.getRecommendedVideos().pipe(
+          map((res) => {
+            console.log(res)
+            return VideoActions.getRecommendedVideosSuccess({videos: res.videos})
+          }),
+          catchError((error: any) =>
+            of(VideoActions.getRecommendedVideosFailure({error: error}))
+          )
+        )
+      )
+    );
+  },
+  {functional: true}
+);

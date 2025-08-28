@@ -4,6 +4,17 @@ import {createReducer, on} from '@ngrx/store';
 import * as VideoActions from '../actions/video.actions';
 
 const initialState: VideoState = {
+  isGettingLatest: false,
+  isGetLatestSuccess: false,
+  isGetLatestError: null,
+  latestVideos: [] as VideoModel[],
+  canGetMoreLatest: true,
+
+  isGettingRecommended: false,
+  isGetRecommendedSuccess: false,
+  isGetRecommendedError: null,
+  recommendedVideos: [] as VideoModel[],
+
   videoDetail: {} as VideoModel,
   isCreating: false,
   isCreateError: null,
@@ -98,6 +109,62 @@ export const videoReducer = createReducer(
       isCreatingInfo: false,
       isCreateInfoError: error,
       isCreateInfoSuccess: false,
+    }
+  }),
+  on(VideoActions.getLatestVideos, (state, {type}) => {
+    console.log(type);
+    return {
+      ...state,
+      isGettingLatest: true,
+      isGetLatestSuccess: false,
+      isGetLatestError: null,
+    }
+  }),
+  on(VideoActions.getLatestVideosSuccess, (state, {videos, totalCount}) => {
+    return {
+      ...state,
+      latestVideos: [...state.latestVideos, ...videos],
+      canGetMoreLatest: state.latestVideos.length < totalCount,
+      isGettingLatest: false,
+      isGetLatestSuccess: true,
+      isGetLatestError: null,
+    }
+  }),
+  on(VideoActions.getLatestVideosFailure, (state, {type, error}) => {
+    console.log(type);
+    return {
+      ...state,
+      isGettingLatest: false,
+      isGetLatestSuccess: false,
+      isGetLatestError: error,
+    }
+  }),
+  on(VideoActions.getRecommendedVideos, (state, {type}) => {
+    console.log(type);
+    return {
+      ...state,
+      isGettingRecommended: true,
+      isGetRecommendedSuccess: false,
+      isGetRecommendedError: null,
+    }
+  }),
+  on(VideoActions.getRecommendedVideosSuccess, (state, {videos, type}) => {
+    console.log(type);
+    return {
+      ...state,
+      recommendedVideos: videos,
+      isGettingRecommended: false,
+      isGetRecommendedSuccess: true,
+      isGetRecommendedError: null,
+    }
+  }),
+  on(VideoActions.getRecommendedVideosFailure, (state, {error, type}) => {
+    console.log(type);
+    return <VideoState>{
+      ...state,
+      isGettingRecommended: false,
+      isGetRecommendedSuccess: false,
+      isGetRecommendedError: error,
     }
   })
 );

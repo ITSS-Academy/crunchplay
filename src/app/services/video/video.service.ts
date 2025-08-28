@@ -1,11 +1,9 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {Store} from '@ngrx/store';
-import {AuthState} from '../../ngrx/states/auth.state';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {catchError, from, map, mergeMap, Observable, throwError, toArray} from 'rxjs';
-import {v4 as uuidv4} from 'uuid';
 import {environment} from '../../environments/environment.development';
 import {UploadVideoModel, VideoModel} from '../../models/video.model';
+import supabase from '../../utils/supabase';
 
 
 @Injectable({
@@ -13,14 +11,12 @@ import {UploadVideoModel, VideoModel} from '../../models/video.model';
 })
 export class VideoService {
 
-  accessToken!: string
+  constructor(private http: HttpClient) {
 
-  constructor(private http: HttpClient, private store: Store<{
-    auth: AuthState
-  }>) {
-    this.store.select(state => state.auth.auth.access_token).subscribe(accessToken => {
-      this.accessToken = accessToken || ''
-    })
+  }
+
+  getAccessToken() {
+    return supabase.auth.getSession()
   }
 
   chunkVideo(video: File, videoId: string): Observable<any> {
@@ -36,51 +32,71 @@ export class VideoService {
 
     let uploadedChunks = 0;
 
-    return from(chunks).pipe(
-      mergeMap(({index, chunk}) => {
-        const formData = new FormData();
+    return from(this.getAccessToken()).pipe(
+      mergeMap((data) => {
+        return from(chunks).pipe(
+          mergeMap(({index, chunk}) => {
+            if (data.error || !data.data.session) {
+              return throwError(() => new Error('No access token'));
+            }
+            const formData = new FormData();
 
-        const fileType = video.type.split('/')[1] || 'bin';
+            const fileType = video.type.split('/')[1] || 'bin';
 
-        formData.set('videoName', `${videoId}.${fileType}.part${index}`);
-        formData.set('videoId', videoId);
-        formData.append('files', chunk, `${videoId}.${fileType}.part${index}`);
+            formData.set('videoName', `${videoId}.${fileType}.part${index}`);
+            formData.set('videoId', videoId);
+            formData.append('files', chunk, `${videoId}.${fileType}.part${index}`);
 
-        return this.http.post(`${environment.api_base_url}/video/upload`, formData, {
-          headers: {
-            Authorization: `${this.accessToken}`
-          }
-        }).pipe(
-          map((res) => {
-            uploadedChunks++;
-            return res;
-          }),
-          catchError(err => {
-            console.error(`❌ Chunk ${index} failed`, err);
-            return throwError(() => new Error(`Chunk ${index} failed: ${err.message}`));
-          })
+            return this.http.post(`${environment.api_base_url}/video/upload`, formData, {
+              headers: {
+                Authorization: `${data.data.session.access_token}`
+              }
+            }).pipe(
+              map((res) => {
+                uploadedChunks++;
+                return res;
+              }),
+              catchError(err => {
+                console.error(`❌ Chunk ${index} failed`, err);
+                return throwError(() => new Error(`Chunk ${index} failed: ${err.message}`));
+              })
+            );
+          }, totalChunks),
+          toArray(),
         );
-      }, totalChunks),
-      toArray(),
-    );
+      })
+    )
   }
 
   mergeChunks(videoId: string) {
-    console.log(this.accessToken)
-    return this.http.post<VideoModel>(`${environment.api_base_url}/video/merge?videoId=${videoId}`, {}, {
-      headers: {
-        Authorization: `${this.accessToken}`
-      }
-    });
-
+    return from(this.getAccessToken()).pipe(
+      mergeMap((data) => {
+        if (data.error || !data.data.session) {
+          return throwError(() => new Error('No access token'));
+        }
+        return this.http.post<VideoModel>(`${environment.api_base_url}/video/merge?videoId=${videoId}`, {}, {
+          headers: {
+            Authorization: `${data.data.session.access_token}`
+          }
+        });
+      })
+    )
   }
 
+
   getVideoInfo(videoId: string): Observable<VideoModel> {
-    return this.http.get<VideoModel>(`${environment.api_base_url}/video/info/${videoId}`, {
-      headers: {
-        Authorization: `${this.accessToken}`
-      }
-    });
+    return from(this.getAccessToken()).pipe(
+      mergeMap((data) => {
+        if (data.error || !data.data.session) {
+          return throwError(() => new Error('No access token'));
+        }
+        return this.http.get<VideoModel>(`${environment.api_base_url}/video/info/${videoId}`, {
+          headers: {
+            Authorization: `${data.data.session.access_token}`
+          }
+        });
+      })
+    )
   }
 
   createInfo(data: UploadVideoModel): Observable<VideoModel> {
@@ -94,10 +110,65 @@ export class VideoService {
       formData.append('thumbnail', data.thumbnail, data.thumbnail.name);
     }
 
-    return this.http.post<VideoModel>(`${environment.api_base_url}/video/create-info`, formData, {
-      headers: {
-        Authorization: `${this.accessToken}`
-      }
-    });
+    return from(this.getAccessToken()).pipe(
+      mergeMap((authData) => {
+        if (authData.error || !authData.data.session) {
+          return throwError(() => new Error('No access token'));
+        }
+        return this.http.post<VideoModel>(`${environment.api_base_url}/video/create-info`, formData, {
+          headers: {
+            Authorization: `${authData.data.session.access_token}`
+          }
+        });
+      })
+    )
+  }
+
+  getLatestVideos(
+    page: number = 0,
+  ) {
+    return from(this.getAccessToken()).pipe(
+      mergeMap((data) => {
+        let headers: HttpHeaders | undefined = undefined;
+        if (data.data.session && !data.error) {
+          headers = new HttpHeaders({
+            Authorization: `${data.data.session.access_token}`
+          });
+        }
+        return this.http.get<{
+          videos: VideoModel[]
+          pagination: {
+            totalCount: number,
+            page: number,
+            limit: number,
+          }
+        }>(`${environment.api_base_url}/video/latest?page=${page}&limit=20`, {
+          headers
+        });
+      }))
+  }
+
+  getRecommendedVideos(
+    page: number = 0,
+  ) {
+    return from(this.getAccessToken()).pipe(
+      mergeMap((data) => {
+        let headers: HttpHeaders | undefined = undefined;
+        if (data.data.session && !data.error) {
+          headers = new HttpHeaders({
+            Authorization: `${data.data.session.access_token}`
+          });
+        }
+        return this.http.get<{
+          videos: VideoModel[]
+          pagination: {
+            totalCount: number,
+            page: number,
+            limit: number,
+          }
+        }>(`${environment.api_base_url}/video/recommendations-based-on-history?page=${page}&limit=10`, {
+          headers
+        });
+      }))
   }
 }

@@ -1,3 +1,5 @@
+import {ProfileModel} from './profile.model';
+
 export interface VideoModel {
   id: string;
   profileId: string;
@@ -16,7 +18,8 @@ export interface VideoModel {
   category?: {
     id: string;
     name: string;
-  }
+  };
+  profile?: ProfileModel
 }
 
 export interface UploadVideoModel {
