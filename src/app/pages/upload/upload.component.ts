@@ -22,6 +22,7 @@ import {CategoryState} from '../../ngrx/states/category.state';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {MatDivider} from '@angular/material/divider';
 import {take, filter} from 'rxjs/operators';
+import {convertToSupabaseUrl} from '../../utils/img-converter';
 
 @Component({
   selector: 'app-upload',
@@ -235,4 +236,5 @@ export class UploadComponent implements OnInit, OnDestroy, AfterViewInit {
     this.store.dispatch(VideoActions.clearVideoState())
   }
 
+  protected readonly convertToSupabaseUrl = convertToSupabaseUrl;
 }

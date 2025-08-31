@@ -15,6 +15,10 @@ export class SidebarComponent {
 
   protected readonly RouterLink = RouterLink;
   protected readonly sections = sections;
+
+  removeFocus($event: Event) {
+    ($event.currentTarget as HTMLElement).blur()
+  }
 }
 
 const sections = [

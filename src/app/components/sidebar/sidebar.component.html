@@ -12,6 +12,7 @@
 
           @for (route of section.routes; track route) {
             <a
+              (click)="removeFocus($event)"
               [ngClass]="{ 'collapsed': collapsed }"
               mat-list-item [routerLink]="route.path" routerLinkActive #rla="routerLinkActive"
               [activated]="rla.isActive">
@@ -34,6 +35,7 @@
         @if (!collapsed) {
           @for (route of section.routes; track route) {
             <a
+              (click)="removeFocus($event)"
               [ngClass]="{ 'collapsed': collapsed }"
               mat-list-item [routerLink]="route.path" routerLinkActive #rla="routerLinkActive"
               [activated]="rla.isActive">
@@ -62,6 +64,7 @@
 
   <mat-nav-list>
     <a
+      (click)="removeFocus($event)"
       [ngClass]="{ 'collapsed': collapsed }"
       mat-list-item
       [routerLink]="'/profile/1/videos'" routerLinkActive="/profile/1/videos" #rla="routerLinkActive"

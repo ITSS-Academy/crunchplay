@@ -20,6 +20,10 @@ const initialState: VideoState = {
   isCreateError: null,
   isCreateSuccess: false,
 
+  isGetVideoById: false,
+  isGetVideoByIdSuccess: false,
+  isGetVideoByIdError: null,
+
   isGetError: null,
   isGetting: false,
   isGetSuccess: false,
@@ -166,5 +170,32 @@ export const videoReducer = createReducer(
       isGetRecommendedSuccess: false,
       isGetRecommendedError: error,
     }
-  })
+  }),
+  on(VideoActions.getVideoById, (state, {videoId, type}) => {
+    console.log(type);
+    return {
+      ...state,
+      isGetVideoById: true,
+      isGetVideoByIdSuccess: false,
+      isGetVideoByIdError: null,
+    }
+  }),
+  on(VideoActions.getVideoByIdSuccess, (state, {video}) => {
+    return {
+      ...state,
+      videoDetail: video,
+      isGetVideoById: false,
+      isGetVideoByIdSuccess: true,
+      isGetVideoByIdError: null,
+    }
+  }),
+  on(VideoActions.getVideoByIdFailure, (state, {error, type}) => {
+    console.log(type);
+    return {
+      ...state,
+      isGetVideoById: false,
+      isGetVideoByIdSuccess: false,
+      isGetVideoByIdError: error,
+    }
+  }),
 );

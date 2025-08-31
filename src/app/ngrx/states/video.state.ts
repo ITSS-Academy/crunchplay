@@ -17,6 +17,10 @@ export interface VideoState {
   isCreateError: any,
   isCreateSuccess: boolean,
 
+  isGetVideoById: boolean,
+  isGetVideoByIdSuccess: boolean,
+  isGetVideoByIdError: any,
+
   isGetting: boolean,
   isGetSuccess: boolean,
   isGetError: any,

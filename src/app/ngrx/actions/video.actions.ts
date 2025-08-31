@@ -49,3 +49,12 @@ export const getRecommendedVideosSuccess = createAction('[Video] Get Recommended
 export const getRecommendedVideosFailure = createAction('[Video] Get Recommended Videos Failure', props<{
   error: any,
 }>());
+
+export const getVideoById = createAction('[Video] Get Video By Id', props<{
+  videoId: string
+}>());
+export const getVideoByIdSuccess = createAction('[Video] Get Video By Id Success', props<
+  { video: VideoModel }>());
+export const getVideoByIdFailure = createAction('[Video] Get Video By Id Failure', props<{
+  error: any,
+}>());

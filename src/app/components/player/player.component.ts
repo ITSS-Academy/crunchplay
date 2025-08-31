@@ -10,6 +10,7 @@ import Plyr from 'plyr';
 })
 export class PlayerComponent implements AfterViewInit {
   @Input() videoSrc!: string;
+  @Input() posterSrc!: string;
 
   @ViewChild('videoRef', {static: true}) videoRef!: ElementRef<HTMLVideoElement>;
 
@@ -25,6 +26,11 @@ export class PlayerComponent implements AfterViewInit {
       const player = new Plyr(video, {
         controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'fullscreen'],
         settings: ['quality', 'speed'],
+        autoplay: false,
+        previewThumbnails: {
+          src: this.posterSrc,
+          enabled: true
+        },
         quality: {
           default: availableQualities[0],
           options: availableQualities,

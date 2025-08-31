@@ -1,8 +1,5 @@
-import {Component, OnInit} from '@angular/core';
-import {MatButton, MatButtonModule} from '@angular/material/button';
-import supabase from '../../utils/supabase';
-import {HomeCardComponent} from '../../components/home-card/home-card.component';
-import {AuthService} from '../../services/auth/auth.service';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {MatButtonModule} from '@angular/material/button';
 import {CommonModule} from '@angular/common';
 import {MatCardModule} from '@angular/material/card';
 import {MatIconModule} from '@angular/material/icon';
@@ -16,6 +13,7 @@ import {AuthState} from '../../ngrx/states/auth.state';
 import {filter, take} from 'rxjs/operators';
 import {HorizontalCardComponent} from '../../components/horizontal-card/horizontal-card.component';
 import {NgxSkeletonLoaderComponent} from 'ngx-skeleton-loader';
+import {clearVideoState} from '../../ngrx/actions/video.actions';
 
 
 @Component({
@@ -24,7 +22,7 @@ import {NgxSkeletonLoaderComponent} from 'ngx-skeleton-loader';
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
   latestVideos: Observable<VideoModel[]>;
   recommendedVideos: Observable<VideoModel[]>;
   isGettingLatestVideos$: Observable<boolean>;
@@ -68,6 +66,11 @@ export class HomeComponent implements OnInit {
         this.canGetMoreLatest = canGetMore
       })
     )
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
+    this.store.dispatch(VideoActions.clearVideoState());
   }
 
 

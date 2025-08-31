@@ -2,6 +2,12 @@ mat-sidenav-container {
   height: 100%;
 }
 
+mat-nav-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
 .sidebar-container {
   display: flex;
   flex-direction: column;
@@ -63,3 +69,4 @@ mat-sidenav-container {
 .active-icon {
   font-weight: 500;
 }
+

@@ -103,3 +103,20 @@ export const getRecommendedVideos = createEffect(
   },
   {functional: true}
 );
+
+export const getVideoById = createEffect(
+  (actions$ = inject(Actions), videoService = inject(VideoService)) => {
+    return actions$.pipe(
+      ofType(VideoActions.getVideoById),
+      exhaustMap((action) =>
+        videoService.getVideoById(action.videoId).pipe(
+          map((video) => VideoActions.getVideoByIdSuccess({video})),
+          catchError((error: any) =>
+            of(VideoActions.getVideoByIdFailure({error: error}))
+          )
+        )
+      )
+    );
+  },
+  {functional: true}
+);

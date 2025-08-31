@@ -171,4 +171,19 @@ export class VideoService {
         });
       }))
   }
+
+  getVideoById(videoId: string) {
+    return from(this.getAccessToken()).pipe(
+      mergeMap((data) => {
+        let headers: HttpHeaders | undefined = undefined;
+        if (data.data.session && !data.error) {
+          headers = new HttpHeaders({
+            Authorization: `${data.data.session.access_token}`
+          });
+        }
+        return this.http.get<VideoModel>(`${environment.api_base_url}/video/get-video/${videoId}`, {
+          headers
+        });
+      }))
+  }
 }
