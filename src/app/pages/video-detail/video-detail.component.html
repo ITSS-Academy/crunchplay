@@ -2,7 +2,8 @@
   @if (videoDetail$| async; as video) {
     <div class="container">
       <div class="main-content">
-        <div class="video-container">
+        <div class="video-container" #videoContainer
+             [ngStyle]="{'aspect-ratio': getAspectRatioToUse(), 'max-height': '70vh'}">
           <app-player
             posterSrc="{{convertToSupabaseUrl(video.thumbnailPath,'thumbnail')}}"
             videoSrc="{{convertToSupabaseUrl(`${video.id}/master.m3u8`,'video')}}">

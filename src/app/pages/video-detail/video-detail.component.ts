@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit, ViewChild, ElementRef} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild, ElementRef, AfterViewInit, HostListener} from '@angular/core';
 import {PlayerComponent} from '../../components/player/player.component';
 import {Store} from '@ngrx/store';
 import {VideoState} from '../../ngrx/states/video.state';
@@ -36,7 +36,7 @@ import {DurationPipe} from '../../pipes/duration.pipe';
   templateUrl: './video-detail.component.html',
   styleUrl: './video-detail.component.scss'
 })
-export class VideoDetailComponent implements OnInit, OnDestroy {
+export class VideoDetailComponent implements OnInit, OnDestroy, AfterViewInit {
   videoDetail$: Observable<VideoModel>;
   isGettingVideoById$: Observable<boolean>;
   subscriptions: Subscription[] = [];
@@ -45,6 +45,10 @@ export class VideoDetailComponent implements OnInit, OnDestroy {
   isGettingLikeCommentCount$: Observable<boolean>
 
   isGettingNextVideos$: Observable<boolean>
+
+  aspectRatioToUse = '16/9';
+  maxVideoHeight = 0.7; // 70% of viewport height
+  @ViewChild('videoContainer') videoContainerRef?: ElementRef<HTMLDivElement>;
 
   constructor(
     private store: Store<{
@@ -74,6 +78,39 @@ export class VideoDetailComponent implements OnInit, OnDestroy {
         }
       })
     )
+  }
+
+  ngAfterViewInit() {
+    setTimeout(() => this.updateAspectRatioToUse());
+  }
+
+  @HostListener('window:resize')
+  onResize() {
+    this.updateAspectRatioToUse();
+  }
+
+  updateAspectRatioToUse() {
+    const video = (this.videoDetail$ as any)?.source?._value || this.video;
+    const container = this.videoContainerRef?.nativeElement;
+    if (!container || !video) return;
+    const width = container.offsetWidth || window.innerWidth * 0.7;
+    let aspect = this.getAspectRatioValue(video);
+    let [w, h] = aspect.split('/').map(Number);
+    if (!w || !h) {
+      w = 16;
+      h = 9;
+    }
+    const videoHeight = width * h / w;
+    const maxHeight = window.innerHeight * this.maxVideoHeight;
+    if (videoHeight > maxHeight) {
+      this.aspectRatioToUse = '16/9';
+    } else {
+      this.aspectRatioToUse = aspect;
+    }
+  }
+
+  getAspectRatioToUse(): string {
+    return this.aspectRatioToUse;
   }
 
   ngOnDestroy() {
@@ -172,6 +209,16 @@ export class VideoDetailComponent implements OnInit, OnDestroy {
   }
 
   protected readonly convertToSupabaseUrl = convertToSupabaseUrl;
+
+  getAspectRatioValue(video: VideoModel): string {
+    // aspectRatio có thể là "16:9", "4:3", "1:1", ...
+    if (!video?.aspectRatio) return '16/9';
+    const parts = video.aspectRatio.split(':');
+    if (parts.length === 2 && !isNaN(+parts[0]) && !isNaN(+parts[1])) {
+      return `${+parts[0]}/${+parts[1]}`;
+    }
+    return '16/9';
+  }
 
   unlikeVideo() {
 
