@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, Input, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, Input, ViewChild, OnDestroy} from '@angular/core';
 import Hls from 'hls.js';
 import Plyr from 'plyr';
 
@@ -8,15 +8,33 @@ import Plyr from 'plyr';
   templateUrl: './player.component.html',
   styleUrl: './player.component.scss'
 })
-export class PlayerComponent implements AfterViewInit {
+export class PlayerComponent implements AfterViewInit, OnDestroy {
   @Input() videoSrc!: string;
   @Input() posterSrc!: string;
 
   @ViewChild('videoRef', {static: true}) videoRef!: ElementRef<HTMLVideoElement>;
 
+  private hls?: Hls;
+  private player?: Plyr;
+
   ngAfterViewInit() {
     const video = this.videoRef.nativeElement;
     const hls = new Hls();
+
+    // Clean up previous instances if any
+    if (this.hls) {
+      this.hls.destroy();
+    }
+    if (this.player) {
+      this.player.destroy();
+    }
+
+    this.hls = hls;
+
+    // Log the videoSrc and posterSrc for debugging
+    console.log('videoSrc:', this.videoSrc);
+    console.log('posterSrc:', this.posterSrc);
+
 
     hls.loadSource(this.videoSrc);
     hls.attachMedia(video);
@@ -29,7 +47,7 @@ export class PlayerComponent implements AfterViewInit {
         autoplay: true,
         previewThumbnails: {
           src: this.posterSrc,
-          enabled: true
+          enabled: false
         },
         quality: {
           default: availableQualities[0],
@@ -49,6 +67,24 @@ export class PlayerComponent implements AfterViewInit {
           global: true
         }
       });
+      this.player = player;
+      // Add Plyr event logging
+      player.on('error', (event) => {
+        console.error('Plyr error event:', event);
+      })
     });
+    this.hls.on(Hls.Events.ERROR, (event, data) => {
+      console.error('HLS.js error:', data);
+    });
+
+  }
+
+  ngOnDestroy() {
+    if (this.hls) {
+      this.hls.destroy();
+    }
+    if (this.player) {
+      this.player.destroy();
+    }
   }
 }
