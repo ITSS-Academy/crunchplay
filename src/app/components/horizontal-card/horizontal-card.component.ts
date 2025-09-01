@@ -14,6 +14,7 @@ import {RouterLink} from '@angular/router';
 import {VideoModel} from '../../models/video.model';
 import {DurationPipe} from '../../pipes/duration.pipe';
 import {convertToSupabaseUrl} from '../../utils/img-converter';
+import {PlayerComponent} from '../player/player.component';
 
 @Component({
   selector: 'app-horizontal-card',
@@ -30,7 +31,8 @@ import {convertToSupabaseUrl} from '../../utils/img-converter';
     DurationPipe,
     MatCardModule,
     DecimalPipe,
-    DatePipe
+    DatePipe,
+    PlayerComponent
   ],
   templateUrl: './horizontal-card.component.html',
   styleUrl: './horizontal-card.component.scss'
@@ -38,4 +40,26 @@ import {convertToSupabaseUrl} from '../../utils/img-converter';
 export class HorizontalCardComponent {
   @Input() videoDetail!: VideoModel
   protected readonly convertToSupabaseUrl = convertToSupabaseUrl;
+
+  showVideoPreview = false;
+  private previewTimeout: NodeJS.Timeout | null = null;
+
+  onDragEnter() {
+    if (!this.showVideoPreview && !this.previewTimeout) {
+      console.log("Start preview timer");
+      this.previewTimeout = setTimeout(() => {
+        console.log("Show preview");
+        this.showVideoPreview = true;
+        this.previewTimeout = null;
+      }, 1000);
+    }
+  }
+
+  onDragLeave() {
+    if (this.previewTimeout) {
+      clearTimeout(this.previewTimeout);
+      this.previewTimeout = null;
+    }
+    this.showVideoPreview = false;
+  }
 }

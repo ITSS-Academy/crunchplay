@@ -6,7 +6,7 @@
       }
       @if (isRateLimitReached) {
         <div class="example-rate-limit-reached">
-          GitHub's API rate limit has been reached. It will be reset in one minute.
+          Can't load data right now
         </div>
       }
     </div>
@@ -40,7 +40,7 @@
         <td mat-cell *matCellDef="let row">
           @if (row.thumbnailPath) {
             <img
-              [src]="'https://zkeqdgfyxlmcrmfehjde.supabase.co/storage/v1/object/public/thumbnails/' + row.thumbnailPath"
+              [src]="convertToSupabaseUrl(row.thumbnailPath, 'thumbnail')"
               alt="thumbnail"
               style="max-width: 80px; max-height: 48px;"/>
           }
@@ -62,7 +62,7 @@
       <!-- Status Column -->
       <ng-container matColumnDef="status">
         <th mat-header-cell *matHeaderCellDef>Status</th>
-        <td mat-cell *matCellDef="let row">{{ row.status }}</td>
+        <td mat-cell *matCellDef="let row">{{ (row.status | status: row.title) || '-' }}</td>
       </ng-container>
 
       <!-- Created Column -->

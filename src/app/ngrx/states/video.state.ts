@@ -17,6 +17,10 @@ export interface VideoState {
   isCreateError: any,
   isCreateSuccess: boolean,
 
+  isGetVideoById: boolean,
+  isGetVideoByIdSuccess: boolean,
+  isGetVideoByIdError: any,
+
   isGetting: boolean,
   isGetSuccess: boolean,
   isGetError: any,
@@ -24,4 +28,8 @@ export interface VideoState {
   isCreatingInfo: boolean,
   isCreateInfoError: any,
   isCreateInfoSuccess: boolean,
+
+  isGettingLikeComments: boolean,
+  isGetLikeCommentsSuccess: boolean,
+  isGetLikeCommentsError: any,
 }

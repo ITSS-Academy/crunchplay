@@ -49,3 +49,41 @@ export const getRecommendedVideosSuccess = createAction('[Video] Get Recommended
 export const getRecommendedVideosFailure = createAction('[Video] Get Recommended Videos Failure', props<{
   error: any,
 }>());
+
+export const getVideoById = createAction('[Video] Get Video By Id', props<{
+  videoId: string
+}>());
+export const getVideoByIdSuccess = createAction('[Video] Get Video By Id Success', props<
+  { video: VideoModel }>());
+export const getVideoByIdFailure = createAction('[Video] Get Video By Id Failure', props<{
+  error: any,
+}>());
+
+export const getNextVideos = createAction('[Video] Get Next Videos', props<{
+  page: number,
+  videoId: string
+}>())
+export const getNextVideosSuccess = createAction('[Video] Get Next Videos Success', props<
+  {
+    videos: VideoModel[],
+    totalCount: number
+  }>());
+export const getNextVideosFailure = createAction('[Video] Get Next Videos Failure', props<{
+  error: any,
+}>())
+
+export const getLikeCommentCount = createAction('[Video] Get Like Comment Count', props<{
+  videoId: string
+}>())
+export const getLikeCommentCountSuccess = createAction('[Video] Get Like Comment Count Success', props<
+  {
+    video: {
+      likeCount: number,
+      commentCount: number,
+      isLiked: boolean,
+    }
+  }>());
+export const getLikeCommentCountFailure = createAction('[Video] Get Like Comment Count Failure', props<{
+  error: any,
+}>())
+

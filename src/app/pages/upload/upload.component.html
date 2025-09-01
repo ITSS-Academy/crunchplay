@@ -48,7 +48,7 @@
             <div class="info-step">
               <div class="thumbnail-col">
                 <img
-                  [src]="video.thumbnailPath ? `https://zkeqdgfyxlmcrmfehjde.supabase.co/storage/v1/object/public/thumbnails/${video.thumbnailPath}`: ''"
+                  [src]="video.thumbnailPath ? convertToSupabaseUrl(video.thumbnailPath,'thumbnail'): ''"
                   alt="Thumbnail" class="thumbnail-preview"/>
                 <input #thumbInput type="file" accept="image/*" hidden (change)="onThumbnailSelected($event)"/>
                 <button mat-raised-button color="primary" type="button" (click)="thumbInput.click()">
@@ -121,7 +121,7 @@
               <mat-card-title>{{ video?.title }}</mat-card-title>
             </mat-card-header>
             <img mat-card-image
-                 [src]="video.thumbnailPath ? `https://zkeqdgfyxlmcrmfehjde.supabase.co/storage/v1/object/public/thumbnails/${video.thumbnailPath}`: ''"
+                 [src]="video.thumbnailPath ? convertToSupabaseUrl(video.thumbnailPath,'thumbnail') : ''"
                  alt="Thumbnail"/>
             <mat-card-content>
               @if (video.description && video.description.length > 0) {
