@@ -4,6 +4,10 @@
   aspect-ratio: 16/9;
 }
 
+::ng-deep .plyr__controls {
+  display: none;
+}
+
 ::ng-deep .plyr {
   height: 100%;
   --shadow-color: 197deg 32% 65%;

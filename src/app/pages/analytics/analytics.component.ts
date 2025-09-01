@@ -4,17 +4,20 @@ import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
 import {MatSort, MatSortModule, SortDirection} from '@angular/material/sort';
 import {MatTableModule} from '@angular/material/table';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
-import {HttpClient} from '@angular/common/http';
-import {catchError, merge, Observable, startWith, switchMap, of as observableOf, map} from 'rxjs';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {catchError, merge, Observable, startWith, switchMap, of as observableOf, map, from} from 'rxjs';
 import {environment} from '../../environments/environment';
 import {Store} from '@ngrx/store';
 import {AuthState} from '../../ngrx/states/auth.state';
 import {VideoModel} from '../../models/video.model';
 import {MatIconModule} from '@angular/material/icon';
+import supabase from '../../utils/supabase';
+import {convertToSupabaseUrl} from '../../utils/img-converter';
+import {StatusPipe} from '../../utils/status.pipe';
 
 @Component({
   selector: 'app-analytics',
-  imports: [MatProgressSpinnerModule, MatTableModule, MatSortModule, MatPaginatorModule, DatePipe, MatIconModule, DecimalPipe],
+  imports: [MatProgressSpinnerModule, MatTableModule, MatSortModule, MatPaginatorModule, DatePipe, MatIconModule, DecimalPipe, StatusPipe],
   templateUrl: './analytics.component.html',
   styleUrl: './analytics.component.scss'
 })
@@ -46,7 +49,7 @@ export class AnalyticsComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.exampleDatabase = new ExampleHttpDatabase(this._httpClient, this.store);
+    this.exampleDatabase = new ExampleHttpDatabase(this._httpClient);
 
     // If the user changes the sort order, reset back to the first page.
     this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
@@ -80,6 +83,8 @@ export class AnalyticsComponent implements AfterViewInit {
       )
       .subscribe(data => (this.data = data));
   }
+
+  protected readonly convertToSupabaseUrl = convertToSupabaseUrl;
 }
 
 export interface GithubApi {
@@ -90,26 +95,39 @@ export interface GithubApi {
 
 /** An example database that the data source uses to retrieve data for the table. */
 export class ExampleHttpDatabase {
-  accessToken!: string
 
-  constructor(private _httpClient: HttpClient, private store: Store<{
-    auth: AuthState
-  }>) {
-    this.store.select((state: any) => state.auth).subscribe((authState) => {
-      this.accessToken = authState.auth.access_token || '';
-    });
+  constructor(private _httpClient: HttpClient) {
+
   }
 
-  getRepoIssues(sort: string, order: SortDirection, page: number): Observable<GithubApi> {
-    const href = `${environment.api_base_url}/video/user-videos/7bd0330f-b0e1-4ee7-aba0-fff2860e749d`;
-    console.log(sort, order, page)
-    const requestUrl = `${href}?sort=${sort}&orderBy=${order}&page=${page}&limit=10`;
+  getAccessToken() {
+    return from(supabase.auth.getSession())
+  }
 
-    return this._httpClient.get<GithubApi>(requestUrl, {
-      headers: {
-        'Authorization': this.accessToken
-      }
-    });
+
+  getRepoIssues(sort: string, order: SortDirection, page: number): Observable<GithubApi> {
+    const href = `${environment.api_base_url}/video/user-videos/`;
+    console.log(sort, order, page)
+
+    return this.getAccessToken().pipe(
+      switchMap((data) => {
+        let headers: HttpHeaders | undefined = undefined;
+        let newHref = href
+        if (data.data.session && !data.error) {
+          headers = new HttpHeaders({
+            Authorization: `${data.data.session.access_token}`
+          });
+          newHref = href + data.data.session.user.id
+        }
+
+        const requestUrl = `${newHref}?sort=${sort}&orderBy=${order}&page=${page}&limit=10`;
+
+
+        return this._httpClient.get<GithubApi>(requestUrl, {
+          headers: headers
+        });
+      })
+    );
   }
 
 }

@@ -14,64 +14,119 @@
             <mat-card-title>{{ video.title }}</mat-card-title>
           </mat-card-header>
           <mat-card-content>
-            <div class="channel-bar">
-              <img [src]="video.profile?.avatarPath || 'https://via.placeholder.com/48?text=Avatar'" alt="Avatar"
-                   class="avatar channel-avatar">
-              <div class="channel-info">
-                <div class="channel-name">{{ video.profile?.username || 'Tên kênh' }}</div>
-                <div class="channel-subscribers">1,234,567 người đăng ký</div>
+            <div style="display: flex; flex-direction: column; gap: 16px; padding: 16px">
+              <div class="channel-bar">
+                <img [src]="video.profile?.avatarPath || 'https://via.placeholder.com/48?text=Avatar'" alt="Avatar"
+                     class="avatar channel-avatar">
+                <div class="channel-info">
+                  <div class="channel-name">{{ video.profile?.username || 'Tên kênh' }}</div>
+                  <div class="channel-subscribers">1,234,567 người đăng ký</div>
+                </div>
+                <button mat-raised-button class="subscribe-btn" (click)="subscribe()">Đăng ký</button>
               </div>
-              <button mat-raised-button color="accent" class="subscribe-btn" (click)="subscribe()">Đăng ký</button>
-            </div>
-            <div class="video-actions">
-              <button mat-button (click)="likeVideo()">
-                <mat-icon>thumb_up</mat-icon>
-                Thích
-                <span class="action-count">12K</span>
-              </button>
-              <button mat-button>
-                <mat-icon>thumb_down</mat-icon>
-                Không thích
-              </button>
-              <button mat-stroked-button (click)="toggleComments()">
-                <mat-icon>comment</mat-icon>
-                Bình luận
-              </button>
-              <button mat-button>
-                <mat-icon>share</mat-icon>
-                Chia sẻ
-              </button>
-            </div>
-            <div class="video-meta">
-              <span>{{ video.viewCount || 123456 }} lượt xem • {{ video.createdAt | date:'mediumDate' }}</span>
-            </div>
+              <div class="video-actions">
+                @if (!(isGettingLikeCommentCount$ | async)) {
+                  @if (!video.isLikedByUser) {
+                    <button mat-button (click)="likeVideo()">
+                      <mat-icon
+                        fontSet="material-symbols-outlined"
+                      >thumb_up
+                      </mat-icon>
+                      Like
+                      <span class="action-count">{{
+                          video.likeCount
+                        }}</span>
+                    </button>
+                  } @else {
+                    <button mat-button color="primary" (click)="unlikeVideo()">
+                      <mat-icon
+                      >thumb_up
+                      </mat-icon>
+                      Liked
+                      {{
+                        video.likeCount
+                      }}
+                    </button>
+                  }
 
-            <div class="video-description-row">
-              <div class="video-description">
-                {{ video.description || 'Mô tả video mẫu. Đây là phần mô tả chi tiết về video.' }}
-              </div>
-              <span class="see-more" (click)="openDescriptionDetail()">xem thêm</span>
-            </div>
-
-            <div class="comment-section fake-comment-section" (click)="toggleComments()">
-              <div class="comment-section-header">
-                <span class="comment-count">{{ comments.length }} bình luận</span>
-                <button mat-button class="show-all-comments">Hiện tất cả</button>
-              </div>
-              <div class="comment-list">
-                @for (c of comments | slice:0:2; track $index) {
-                  <div class="comment-item">
-                    <div class="comment-user-row">
-                      <img [src]="c.avatar" class="comment-avatar" alt="Avatar">
-                      <span class="comment-user">{{ c.username }}</span>
-                    </div>
-                    <span class="comment-text">{{ c.text }}</span>
-                  </div>
+                  <button mat-button (click)="toggleComments()">
+                    <mat-icon
+                      fontSet="material-symbols-outlined"
+                    >comment
+                    </mat-icon>
+                    Comment
+                  </button>
+                  <button mat-button>
+                    <mat-icon
+                      fontSet="material-symbols-outlined"
+                    >bookmark
+                    </mat-icon>
+                    Save
+                  </button>
+                } @else {
+                  // 3 button disabled
+                  <button mat-button disabled>
+                    <mat-icon
+                      fontSet="material-symbols-outlined"
+                    >thumb_up
+                    </mat-icon>
+                    Like
+                    <span class="action-count">...</span>
+                  </button>
+                  <button mat-button disabled>
+                    <mat-icon
+                      fontSet="material-symbols-outlined"
+                    >comment
+                    </mat-icon>
+                    Comment
+                  </button>
+                  <button mat-button disabled>
+                    <mat-icon
+                      fontSet="material-symbols-outlined"
+                    >bookmark
+                    </mat-icon>
+                    Save
+                  </button>
                 }
-
               </div>
-              <div class="comment-preview-overlay">
-                <span>Bấm để xem tất cả bình luận</span>
+
+
+              <div class="video-meta">
+                <span>{{ video.viewCount || 123456 }} lượt xem • {{ video.createdAt | date:'mediumDate' }}</span>
+              </div>
+
+              <div class="video-description-row">
+                <div class="video-description">
+                  {{ video.description || 'Mô tả video mẫu. Đây là phần mô tả chi tiết về video.' }}
+                </div>
+                <span class="see-more" (click)="openDescriptionDetail()">{{
+                    this.showDescriptionDetail ? 'See less' : 'See more'
+                  }}</span>
+              </div>
+
+              <div class="comment-section fake-comment-section" (click)="toggleComments()">
+                <div class="comment-section-header">
+                  <span class="comment-count">{{ comments.length }} bình luận</span>
+                  <button mat-button class="show-all-comments">{{
+                      this.showComments ? 'See less' : 'See all comments'
+                    }}
+                  </button>
+                </div>
+                <div class="comment-list">
+                  @for (c of comments | slice:0:2; track $index) {
+                    <div class="comment-item">
+                      <div class="comment-user-row">
+                        <img [src]="c.avatar" class="comment-avatar" alt="Avatar">
+                        <span class="comment-user">{{ c.username }}</span>
+                      </div>
+                      <span class="comment-text">{{ c.text }}</span>
+                    </div>
+                  }
+
+                </div>
+                <!--                <div class="comment-preview-overlay">-->
+                <!--                  <span>Bấm để xem tất cả bình luận</span>-->
+                <!--                </div>-->
               </div>
             </div>
           </mat-card-content>
@@ -79,18 +134,27 @@
       </div>
 
       <div class="sidebar">
-        <mat-card>
+        <mat-card [ngStyle]="!showDescriptionDetail? {'height': '100%'} : {'height': 'fit-content'}">
           <div class="sidebar-content-wrapper" style="position: relative; height: 100%;">
             <div #recommendedVideosContainer [ngClass]="{'hidden': showComments || showDescriptionDetail}"
                  class="sidebar-recommended-wrapper" style="height: 100%;">
-              <h2 class="sidebar-title">Video Đề Xuất</h2>
               @for (recVideo of recommendedVideos; track $index) {
                 <div class="recommended-item">
-                  <img [src]="recVideo.thumbnail || 'https://via.placeholder.com/80x48?text=Video'" alt="Thumbnail">
-                  <div>
-                    <h3>{{ recVideo.title || 'Tiêu đề video đề xuất' }}</h3>
-                    <p>Người tạo: {{ recVideo.user || 'Tên kênh' }} • {{ recVideo.views || 12345 }} lượt xem
-                      • {{ recVideo.duration || 10 }} phút</p>
+                  <div class="thumbnail-container">
+                    <img [src]="convertToSupabaseUrl(recVideo.thumbnailPath, 'thumbnail') " alt="Thumbnail"
+                         class="recommended-thumbnail">
+                    <span class="duration-overlay">
+                      {{ recVideo.duration | duration }}
+                    </span>
+                  </div>
+                  <div style="display: flex; flex-direction: column; justify-content: space-between; height: 100%">
+                    <h4 style="margin: 0; font-size: 18px">{{ recVideo.title || 'Tiêu đề video đề xuất' }}</h4>
+                    <div style="display: flex; align-items: center; gap: 6px">
+
+                      <p style="margin: 0">{{ recVideo.viewCount || 12345 }} Views • {{ recVideo.createdAt| date }}</p>
+                    </div>
+
+                    <p style="margin: 0">{{ recVideo.profile?.username || 'Tên kênh' }}</p>
                   </div>
                 </div>
               }
@@ -122,11 +186,12 @@
               </div>
             </div>
             <div [ngClass]="{'hidden': !showDescriptionDetail}" class="sidebar-description-overlay">
-              <button mat-icon-button class="close-btn" (click)="closeDescriptionDetail()"
-                      style="position:absolute;top:8px;right:8px;z-index:2;">
-                <mat-icon>close</mat-icon>
-              </button>
-              <h2 class="sidebar-title">Thông tin video</h2>
+              <div class="comment-section-header" style="padding: 0">
+                <h2 class="sidebar-title">Thông tin video</h2>
+                <button mat-icon-button class="close-btn" (click)="closeDescriptionDetail()">
+                  <mat-icon>close</mat-icon>
+                </button>
+              </div>
               <div class="desc-detail-row"><b>Tiêu đề:</b> {{ video.title }}</div>
               <div class="desc-detail-row"><b>Ngày đăng:</b> {{ video.createdAt | date:'mediumDate' }}</div>
               <div class="desc-detail-row"><b>Người đăng:</b> {{ video.profile?.username || 'Tên kênh' }}</div>

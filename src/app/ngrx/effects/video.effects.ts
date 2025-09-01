@@ -120,3 +120,46 @@ export const getVideoById = createEffect(
   },
   {functional: true}
 );
+
+export const getNextVideos = createEffect(
+  (actions$ = inject(Actions), videoService = inject(VideoService)) => {
+    return actions$.pipe(
+      ofType(VideoActions.getNextVideos),
+      exhaustMap((action) =>
+        videoService.getNextVideos(action.videoId, action.page).pipe(
+          map((res) => VideoActions.getNextVideosSuccess({
+            videos: res.recommendations,
+            totalCount: res.pagination.total_count
+          })),
+          catchError((error: any) =>
+            of(VideoActions.getNextVideosFailure({error: error}))
+          )
+        )
+      )
+    );
+  },
+  {functional: true}
+);
+
+export const getLikeCommentCount = createEffect(
+  (actions$ = inject(Actions), videoService = inject(VideoService)) => {
+    return actions$.pipe(
+      ofType(VideoActions.getLikeCommentCount),
+      exhaustMap((action) =>
+        videoService.getLikesComments(action.videoId).pipe(
+          map((res) => VideoActions.getLikeCommentCountSuccess({
+            video: {
+              likeCount: res.likesCount,
+              commentCount: res.commentsCount,
+              isLiked: res.isLiked,
+            }
+          })),
+          catchError((error: any) =>
+            of(VideoActions.getLikeCommentCountFailure({error: error}))
+          )
+        )
+      )
+    );
+  },
+  {functional: true}
+);

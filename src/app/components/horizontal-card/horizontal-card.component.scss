@@ -66,13 +66,21 @@
 .video-title {
   font-size: 1.05rem;
   font-weight: 600;
-  margin-bottom: 8px;
   color: #111;
   line-height: 1.4;
   display: -webkit-box;
   -webkit-line-clamp: 2; // cho phép xuống dòng max 2
   -webkit-box-orient: vertical;
   overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 2px;
+}
+
+.video-uploader {
+  font-size: 0.95rem;
+  color: #666;
+  font-weight: 500;
+  margin-bottom: 2px;
 }
 
 .video-meta {
@@ -80,7 +88,8 @@
   align-items: center;
   gap: 16px;
   font-size: 0.9rem;
-  color: #555;
+  color: #888;
+  font-weight: 400;
 
   mat-icon {
     font-size: 18px;
@@ -88,4 +97,27 @@
     margin-right: 4px;
     color: #777;
   }
+}
+
+.video-youtube-row {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.video-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: #eee;
+}
+
+.video-info-col {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
 }

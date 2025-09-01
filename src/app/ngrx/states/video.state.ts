@@ -28,4 +28,8 @@ export interface VideoState {
   isCreatingInfo: boolean,
   isCreateInfoError: any,
   isCreateInfoSuccess: boolean,
+
+  isGettingLikeComments: boolean,
+  isGetLikeCommentsSuccess: boolean,
+  isGetLikeCommentsError: any,
 }

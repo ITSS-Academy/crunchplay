@@ -186,4 +186,48 @@ export class VideoService {
         });
       }))
   }
+
+  getNextVideos(
+    videoId: string,
+    page: number = 0,
+  ) {
+    return from(this.getAccessToken()).pipe(
+      mergeMap((data) => {
+        let headers: HttpHeaders | undefined = undefined;
+        if (data.data.session && !data.error) {
+          headers = new HttpHeaders({
+            Authorization: `${data.data.session.access_token}`
+          });
+        }
+        return this.http.get<{
+          recommendations: VideoModel[]
+          pagination: {
+            total_count: number,
+            current_page_size: number,
+          }
+        }>(`${environment.api_base_url}/video/recommendations/${videoId}?page=${page}&limit=20`, {
+          headers
+        });
+      }))
+  }
+
+  getLikesComments(videoId: string) {
+    return from(this.getAccessToken()).pipe(
+      mergeMap((data) => {
+        let headers: HttpHeaders | undefined = undefined;
+        if (data.data.session && !data.error) {
+          headers = new HttpHeaders({
+            Authorization: `${data.data.session.access_token}`
+          });
+        }
+        return this.http.get<{
+          likesCount: number,
+          isLiked: boolean,
+          comments: any[],
+          commentsCount: number,
+        }>(`${environment.api_base_url}/video/likes-comments/${videoId}`, {
+          headers
+        });
+      }))
+  }
 }

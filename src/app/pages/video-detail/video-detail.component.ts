@@ -4,7 +4,7 @@ import {Store} from '@ngrx/store';
 import {VideoState} from '../../ngrx/states/video.state';
 import {VideoModel} from '../../models/video.model';
 import {Observable, Subscription} from 'rxjs';
-import {AsyncPipe, DatePipe, NgClass, SlicePipe} from '@angular/common';
+import {AsyncPipe, DatePipe, NgClass, NgStyle, SlicePipe} from '@angular/common';
 import {convertToSupabaseUrl} from '../../utils/img-converter';
 import * as VideoActions from '../../ngrx/actions/video.actions';
 import {ActivatedRoute} from '@angular/router';
@@ -14,6 +14,7 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {FormsModule} from '@angular/forms';
 import {MatIconModule} from '@angular/material/icon';
+import {DurationPipe} from '../../pipes/duration.pipe';
 
 @Component({
   selector: 'app-video-detail',
@@ -28,7 +29,9 @@ import {MatIconModule} from '@angular/material/icon';
     FormsModule,
     DatePipe,
     SlicePipe,
-    NgClass
+    NgClass,
+    NgStyle,
+    DurationPipe
   ],
   templateUrl: './video-detail.component.html',
   styleUrl: './video-detail.component.scss'
@@ -39,6 +42,9 @@ export class VideoDetailComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = [];
   @ViewChild('recommendedVideosContainer') recommendedVideosContainer?: ElementRef<HTMLDivElement>;
   private recommendedScrollTop = 0;
+  isGettingLikeCommentCount$: Observable<boolean>
+
+  isGettingNextVideos$: Observable<boolean>
 
   constructor(
     private store: Store<{
@@ -48,20 +54,31 @@ export class VideoDetailComponent implements OnInit, OnDestroy {
   ) {
     const videoId = this.activatedRoute.snapshot.paramMap.get('videoId');
     this.videoDetail$ = this.store.select(state => state.video.videoDetail);
+    this.isGettingLikeCommentCount$ = this.store.select(state => state.video.isGettingLikeComments);
+    this.isGettingNextVideos$ = this.store.select(state => state.video.isGettingLatest);
     this.isGettingVideoById$ = this.store.select(state => state.video.isGetVideoById);
     this.store.dispatch(VideoActions.getVideoById({videoId: videoId as string}));
+    this.store.dispatch(VideoActions.getNextVideos({videoId: videoId as string, page: 0}));
+    this.store.dispatch(VideoActions.getLikeCommentCount({videoId: videoId as string}));
+
   }
 
   ngOnInit() {
     this.subscriptions.push(
       this.videoDetail$.subscribe(video => {
         console.log(video)
+      }),
+      this.store.select(state => state.video.latestVideos).subscribe(videos => {
+        if (videos) {
+          this.recommendedVideos = videos;
+        }
       })
     )
-
   }
 
   ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
+    this.store.dispatch(VideoActions.clearVideoState());
   }
 
   video = {
@@ -78,29 +95,7 @@ export class VideoDetailComponent implements OnInit, OnDestroy {
     }
   };
 
-  recommendedVideos = [
-    {
-      title: 'Video Đề Xuất 1',
-      thumbnail: 'https://via.placeholder.com/120?text=Thumb1',
-      user: 'User1',
-      views: 100,
-      duration: 15
-    },
-    {
-      title: 'Video Đề Xuất 2',
-      thumbnail: 'https://via.placeholder.com/120?text=Thumb2',
-      user: 'User2',
-      views: 200,
-      duration: 30
-    },
-    {
-      title: 'Video Đề Xuất 3',
-      thumbnail: 'https://via.placeholder.com/120?text=Thumb3',
-      user: 'User3',
-      views: 150,
-      duration: 20
-    }
-  ];
+  recommendedVideos!: VideoModel[]
 
   comments = [
     {
@@ -138,6 +133,10 @@ export class VideoDetailComponent implements OnInit, OnDestroy {
   }
 
   openDescriptionDetail() {
+    if (this.showDescriptionDetail) {
+      this.showDescriptionDetail = false
+      return;
+    }
     this.showDescriptionDetail = true;
     this.showComments = false;
   }
@@ -173,4 +172,8 @@ export class VideoDetailComponent implements OnInit, OnDestroy {
   }
 
   protected readonly convertToSupabaseUrl = convertToSupabaseUrl;
+
+  unlikeVideo() {
+
+  }
 }

@@ -26,7 +26,7 @@ export class PlayerComponent implements AfterViewInit {
       const player = new Plyr(video, {
         controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'fullscreen'],
         settings: ['quality', 'speed'],
-        autoplay: false,
+        autoplay: true,
         previewThumbnails: {
           src: this.posterSrc,
           enabled: true

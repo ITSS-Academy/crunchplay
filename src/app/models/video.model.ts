@@ -20,6 +20,10 @@ export interface VideoModel {
     name: string;
   };
   profile?: ProfileModel
+  likeCount?: number;
+  commentCount?: number;
+  isLikedByUser?: boolean;
+  videoPath: string;
 }
 
 export interface UploadVideoModel {
