@@ -13,6 +13,8 @@ mat-sidenav-content {
 }
 
 .content {
+  height: 100%;
+  overflow: auto;
   padding: 0 16px;
   flex: 1;
 

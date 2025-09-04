@@ -1,24 +1,42 @@
 import {AfterViewInit, Component, inject, ViewChild} from '@angular/core';
-import {DatePipe} from '@angular/common';
+import {DatePipe, DecimalPipe} from '@angular/common';
 import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
 import {MatSort, MatSortModule, SortDirection} from '@angular/material/sort';
 import {MatTableModule} from '@angular/material/table';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
-import {HttpClient} from '@angular/common/http';
-import {catchError, merge, Observable, startWith, switchMap, of as observableOf, map} from 'rxjs';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {catchError, merge, Observable, startWith, switchMap, of as observableOf, map, from} from 'rxjs';
+import {environment} from '../../environments/environment';
+import {Store} from '@ngrx/store';
+import {AuthState} from '../../ngrx/states/auth.state';
+import {VideoModel} from '../../models/video.model';
+import {MatIconModule} from '@angular/material/icon';
+import supabase from '../../utils/supabase';
+import {convertToSupabaseUrl} from '../../utils/img-converter';
+import {StatusPipe} from '../../utils/status.pipe';
 
 @Component({
   selector: 'app-analytics',
-  imports: [MatProgressSpinnerModule, MatTableModule, MatSortModule, MatPaginatorModule, DatePipe],
+  imports: [MatProgressSpinnerModule, MatTableModule, MatSortModule, MatPaginatorModule, DatePipe, MatIconModule, DecimalPipe, StatusPipe],
   templateUrl: './analytics.component.html',
   styleUrl: './analytics.component.scss'
 })
 export class AnalyticsComponent implements AfterViewInit {
   private _httpClient = inject(HttpClient);
 
-  displayedColumns: string[] = ['created', 'state', 'number', 'title'];
+  displayedColumns: string[] = [
+    'title',
+    'description',
+    'categoryId',
+    'thumbnailPath',
+    'duration',
+    'viewCount',
+    'status',
+    'createdAt',
+    'isPublic',
+  ];
   exampleDatabase!: ExampleHttpDatabase | null;
-  data: GithubIssue[] = [];
+  data: VideoModel[] = [];
 
   resultsLength = 0;
   isLoadingResults = true;
@@ -26,6 +44,9 @@ export class AnalyticsComponent implements AfterViewInit {
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
+
+  constructor(private store: Store<{ auth: AuthState }>) {
+  }
 
   ngAfterViewInit() {
     this.exampleDatabase = new ExampleHttpDatabase(this._httpClient);
@@ -56,36 +77,57 @@ export class AnalyticsComponent implements AfterViewInit {
           // Only refresh the result length if there is new data. In case of rate
           // limit errors, we do not want to reset the paginator to zero, as that
           // would prevent users from re-triggering requests.
-          this.resultsLength = data.total_count;
-          return data.items;
+          this.resultsLength = data.totalCount;
+          return data.videos;
         }),
       )
       .subscribe(data => (this.data = data));
   }
+
+  protected readonly convertToSupabaseUrl = convertToSupabaseUrl;
 }
 
 export interface GithubApi {
-  items: GithubIssue[];
-  total_count: number;
+  videos: VideoModel[];
+  totalCount: number;
 }
 
-export interface GithubIssue {
-  created_at: string;
-  number: string;
-  state: string;
-  title: string;
-}
 
+/** An example database that the data source uses to retrieve data for the table. */
 export class ExampleHttpDatabase {
+
   constructor(private _httpClient: HttpClient) {
+
   }
+
+  getAccessToken() {
+    return from(supabase.auth.getSession())
+  }
+
 
   getRepoIssues(sort: string, order: SortDirection, page: number): Observable<GithubApi> {
-    const href = 'https://api.github.com/search/issues';
-    const requestUrl = `${href}?q=repo:angular/components&sort=${sort}&order=${order}&page=${
-      page + 1
-    }`;
+    const href = `${environment.api_base_url}/video/user-videos/`;
+    console.log(sort, order, page)
 
-    return this._httpClient.get<GithubApi>(requestUrl);
+    return this.getAccessToken().pipe(
+      switchMap((data) => {
+        let headers: HttpHeaders | undefined = undefined;
+        let newHref = href
+        if (data.data.session && !data.error) {
+          headers = new HttpHeaders({
+            Authorization: `${data.data.session.access_token}`
+          });
+          newHref = href + data.data.session.user.id
+        }
+
+        const requestUrl = `${newHref}?sort=${sort}&orderBy=${order}&page=${page}&limit=10`;
+
+
+        return this._httpClient.get<GithubApi>(requestUrl, {
+          headers: headers
+        });
+      })
+    );
   }
+
 }

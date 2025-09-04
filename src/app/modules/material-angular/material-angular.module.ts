@@ -37,6 +37,7 @@ import {MatNativeDateModule} from '@angular/material/core';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {ScrollingModule} from '@angular/cdk/scrolling';
 import {MatDialogModule} from '@angular/material/dialog';
+import {MatStepperModule} from '@angular/material/stepper';
 import {
   CdkDrag,
   CdkDropList,
@@ -80,6 +81,7 @@ const materialModules = [
   MatNativeDateModule,
   ScrollingModule,
   MatDialogModule,
+  MatStepperModule,
   CdkDrag,
   CdkDropList,
   MatChipListbox,
@@ -100,4 +102,5 @@ const materialModules = [
     ...materialModules
   ],
 })
-export class MaterialAngularModule { }
+export class MaterialAngularModule {
+}

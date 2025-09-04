@@ -32,12 +32,17 @@ table {
   text-align: center;
 }
 
-/* Column Widths */
-.mat-column-number,
-.mat-column-state {
-  width: 64px;
-}
 
 .mat-column-created {
   width: 124px;
+}
+
+.mat-column-title,
+.mat-column-description,
+.mat-column-status {
+  width: 120px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 300px;
 }

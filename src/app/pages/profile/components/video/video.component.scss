@@ -1,0 +1,32 @@
+.liked-wrapper {
+  padding: 16px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.card {
+  border-radius: 12px;
+  overflow: hidden;
+
+  img {
+    height: 150px;
+    width: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .title {
+    font-size: 1rem;
+    margin: 8px 0 4px;
+  }
+
+  .meta {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin: 0;
+  }
+}

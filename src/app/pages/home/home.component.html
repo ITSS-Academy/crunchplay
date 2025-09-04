@@ -1,7 +1,32 @@
-<p>home works!</p>
+<div class="home-wrapper" (scroll)="onScroll($event)">
+  @if ((this.recommendedVideos | async); as recommendedVideos) {
+    @if (recommendedVideos && recommendedVideos.length > 0) {
+      <h2>Recommended </h2>
+      <div class="video-grid">
+        @for (item of (this.recommendedVideos | async); track $index) {
+          <app-horizontal-card
+            [videoDetail]="item"
+          ></app-horizontal-card>
+        }
+      </div>
+    }
 
-<app-home-card></app-home-card>
+  }
 
-<!--<button (click)="login()" mat-button>login</button>-->
+  <h2>Latest </h2>
+  <div class="video-grid">
+    @for (item of (this.latestVideos | async); track $index) {
+      <app-horizontal-card
+        [videoDetail]="item"
+      ></app-horizontal-card>
+    }
+    @if (isGettingLatest) {
+      @for (item of [1, 2, 1, 1, 1]; track $index) {
+        <ngx-skeleton-loader class="video-card" count="1" appearance="square"
+                             [theme]="{width: '100%', height: '100%', borderRadius: '16px', margin: 'auto'}"/>
+      }
+    }
 
-<!--<button (click)="printIdToken()">id</button>-->
+
+  </div>
+</div>

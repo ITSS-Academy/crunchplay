@@ -1,1 +1,9 @@
-<p>liked-videos works!</p>
+<div class="video-grid">
+  <mat-card *ngFor="let video of videos" class="video-card">
+    <img mat-card-image [src]="video.thumbnail" alt="Video Thumbnail" />
+    <mat-card-content>
+      <h4 class="video-title">{{ video.title }}</h4>
+      <p class="video-meta">{{ video.views }} views • {{ video.date }}</p>
+    </mat-card-content>
+  </mat-card>
+</div>

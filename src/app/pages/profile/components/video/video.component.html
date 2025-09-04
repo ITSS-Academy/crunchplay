@@ -1,1 +1,17 @@
-<p>video works!</p>
+<div class="liked-wrapper">
+  <div *ngIf="likedVideos.length; else empty">
+    <div class="grid">
+      <mat-card *ngFor="let v of likedVideos" class="card" appearance="outlined">
+        <img mat-card-image [src]="v.thumbnail" [alt]="v.title" />
+        <mat-card-content>
+          <h3 class="title">{{ v.title }}</h3>
+          <p class="meta">{{ v.channel }} • {{ v.views }} • {{ v.time }}</p>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+
+  <ng-template #empty>
+    <p>Bạn chưa like video nào.</p>
+  </ng-template>
+</div>

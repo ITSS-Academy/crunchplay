@@ -5,8 +5,8 @@ import {MatIconModule} from '@angular/material/icon';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {MatMenu, MatMenuItem, MatMenuTrigger, MatMenuModule} from '@angular/material/menu';
 import {MatDialog, MatDialogModule} from '@angular/material/dialog';
+import {AuthService} from '../../services/auth/auth.service';
 import {LoginDialogComponent} from '../login-dialog/login-dialog.component';
-import {AuthService} from '../../services/auth.service';
 
 @Component({
   selector: 'app-header',
@@ -20,7 +20,7 @@ import {AuthService} from '../../services/auth.service';
     MatMenuItem,
     MatDialogModule,
     MatMenuModule,
-    LoginDialogComponent,
+
     RouterLink,
   ],
   templateUrl: './header.component.html',
@@ -64,5 +64,10 @@ export class HeaderComponent {
 
   onCreateMenuClosed() {
     this.canOpenCreateMenu = false;
+  }
+
+  logOut() {
+    this.authService.logout();
+    this.router.navigate(['/']);
   }
 }

@@ -1,0 +1,35 @@
+<mat-card class="video-card"
+          (mouseenter)="onDragEnter()"
+          (mouseleave)="onDragLeave()"
+          [routerLink]="['/video-detail', videoDetail.id]" appearance="outlined">
+  <div style="display: flex; flex-direction: column; gap: 1rem">
+    <div class="video-thumbnail-container"
+    >
+      @if (!showVideoPreview) {
+        <ng-container>
+          <img mat-card-image [src]="convertToSupabaseUrl(videoDetail.thumbnailPath, 'thumbnail')"
+               [alt]="videoDetail.title"/>
+          <span class="duration-badge">{{ videoDetail.duration | duration }}</span>
+        </ng-container>
+      } @else {
+        <app-player [videoSrc]="convertToSupabaseUrl(`${videoDetail.id}/master.m3u8`,'video')"
+                    [posterSrc]="convertToSupabaseUrl(videoDetail.thumbnailPath,'thumbnail')"
+        ></app-player>
+      }
+
+
+    </div>
+    <mat-card-content>
+      <div class="video-youtube-row">
+        <img class="video-avatar" [src]="videoDetail.profile?.avatarPath || '/assets/avatar.png'" alt="Avatar"/>
+        <div class="video-info-col">
+          <div class="video-title">{{ videoDetail.title || 'Untitled' }}</div>
+          <div class="video-uploader">{{ videoDetail.profile?.username || videoDetail.profileId }}</div>
+          <div class="video-meta">
+            {{ videoDetail.viewCount | number }} views • {{ videoDetail.createdAt | date:'mediumDate' }}
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+  </div>
+</mat-card>
