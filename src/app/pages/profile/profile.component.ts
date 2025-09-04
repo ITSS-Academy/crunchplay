@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, inject, OnDestroy, OnInit} from '@angular/core';
 import {MatTab, MatTabGroup, MatTabLabel, MatTabsModule} from '@angular/material/tabs';
 import {MatIconModule} from '@angular/material/icon';
 import {ActivatedRoute, Router, NavigationEnd} from '@angular/router';
@@ -7,6 +7,10 @@ import {Subscription} from 'rxjs';
 import {VideoComponent} from './components/video/video.component';
 import {PlaylistComponent} from './components/playlist/playlist.component';
 import {LikedVideosComponent} from './components/liked-videos/liked-videos.component';
+import {MatButtonModule} from '@angular/material/button';
+import {MatDialog, MatDialogModule} from '@angular/material/dialog';
+import {EditDialogComponent} from './components/edit-dialog/edit-dialog.component';
+import {OverlayModule} from '@angular/cdk/overlay';
 
 @Component({
   selector: 'app-profile',
@@ -14,8 +18,10 @@ import {LikedVideosComponent} from './components/liked-videos/liked-videos.compo
     MatIconModule,
     MatTabsModule,
     VideoComponent,
+    MatButtonModule,
     PlaylistComponent,
-    LikedVideosComponent
+    LikedVideosComponent,
+    MatDialogModule,
   ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss'
@@ -24,6 +30,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
   tabRoutes = ['videos', 'playlists', 'liked-videos'];
   selectedIndex = 0;
   subscription: Subscription[] = []
+
+  // mat-dialog
+  readonly dialog = inject(MatDialog);
+
 
   constructor(private route: ActivatedRoute, private router: Router) {
     this.subscription.push(
@@ -37,6 +47,19 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+
+  }
+
+  openEditProfile() {
+    const dialogRef = this.dialog.open(EditDialogComponent, {
+      width: '420px',
+      height: 'fit-content',
+
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(`Dialog result: ${result}`);
+    });
 
   }
 

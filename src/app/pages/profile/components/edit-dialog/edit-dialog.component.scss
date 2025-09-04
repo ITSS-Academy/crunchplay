@@ -1,0 +1,54 @@
+.edit-dialog-wrapper {
+  padding: 32px 24px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.edit-dialog-wrapper h2 {
+  margin-bottom: 16px;
+}
+
+.edit-dialog-wrapper input,
+.edit-dialog-wrapper textarea {
+  margin-bottom: 12px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.edit-dialog-wrapper .avatar-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.edit-dialog-wrapper .avatar-preview img {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #e0e0e0;
+}
+
+.edit-dialog-wrapper .banner-preview {
+  width: 100%;
+  max-width: 340px;
+  height: 80px;
+  border-radius: 12px;
+  margin: 0 auto 12px auto;
+  object-fit: cover;
+  display: block;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.edit-dialog-wrapper .actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}

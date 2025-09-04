@@ -1,1 +1,64 @@
-<p>following-user works!</p>
+<div class="following-container">
+  <h2 class="title">Tất cả kênh đã đăng ký</h2>
+
+  <!-- User 1 -->
+  <div class="user-item">
+    <div class="avatar">Đ</div>
+    <div class="info">
+      <p class="username">Đáng Tiền Không</p>
+      <p class="handle">dangtienkhong • 153 N người đăng ký</p>
+      <p class="description">
+        Kênh review chân thực mọi món đồ bạn thấy trên mạng! Từ đồ ăn vặt hot trend
+        đến đồ trang trí xinh xẻo...
+      </p>
+    </div>
+    <div class="actions">
+      <button mat-stroked-button  [matMenuTriggerFor]="menu1">
+        <mat-icon>notifications</mat-icon>
+        <span class="label">Đã đăng ký</span>
+      </button>
+      <mat-menu #menu1="matMenu">
+        <button mat-menu-item>
+          <mat-icon>cancel</mat-icon>
+          <span>Hủy đăng ký</span>
+        </button>
+      </mat-menu>
+    </div>
+  </div>
+
+  <!-- User 2 -->
+  <div class="user-item">
+    <div class="avatar">C</div>
+    <div class="info">
+      <p class="username">Cheems Tập sự</p>
+      <p class="handle">cheemstapsu • 800 người đăng ký</p>
+      <p class="description">
+        Chúc mn xem video vui vẻ! Nếu thấy hay thì cho Cheems xin một đăng ký nha!
+      </p>
+    </div>
+  </div>
+
+  <!-- User 3 -->
+  <div class="user-item">
+    <div class="avatar">B</div>
+    <div class="info">
+      <p class="username">BIEN TV</p>
+      <p class="handle">bientv • 1,46 Tr người đăng ký</p>
+      <p class="description">
+        Kênh mình làm về video tiktok hay nhất với mong muốn đem lại sự giải trí cho các bạn.
+      </p>
+    </div>
+    <div class="actions">
+      <button mat-stroked-button  [matMenuTriggerFor]="menu1">
+        <mat-icon>notifications</mat-icon>
+        <span class="label">Đã đăng ký</span>
+      </button>
+      <mat-menu #menu1="matMenu">
+        <button mat-menu-item>
+          <mat-icon>cancel</mat-icon>
+          <span>Hủy đăng ký</span>
+        </button>
+      </mat-menu>
+    </div>
+  </div>
+</div>

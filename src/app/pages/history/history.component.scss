@@ -1,0 +1,253 @@
+.history-container {
+  display: flex;
+  gap: 32px;
+  padding: 32px 5vw;
+  background: #f9f9f9;
+  min-height: 100vh;
+}
+
+/* Bên trái (danh sách video) */
+.history-list {
+  flex: 3;
+  min-width: 0;
+
+  .history-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 18px;
+
+    .history-icon {
+      font-size: 28px;
+      color: #1976d2;
+    }
+
+    h2 {
+      font-size: 22px;
+      font-weight: 700;
+      margin: 0;
+    }
+  }
+}
+
+.filter-tabs {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+
+  button {
+    padding: 7px 18px;
+    border-radius: 20px;
+    border: none;
+    background: #f1f1f1;
+    font-size: 15px;
+    cursor: pointer;
+    font-weight: 500;
+    color: #333;
+    transition: all 0.2s;
+
+    &.active {
+      background: #1976d2;
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(25, 118, 210, 0.08);
+    }
+
+    &:hover {
+      background: #e3e3e3;
+    }
+  }
+}
+
+.day-label {
+  font-weight: 600;
+  margin: 18px 0 12px 0;
+  color: #1976d2;
+  font-size: 16px;
+}
+
+.video-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+  margin-bottom: 22px;
+  padding: 16px 18px;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  transition: box-shadow 0.2s, transform 0.2s;
+
+  &:hover {
+    box-shadow: 0 4px 24px rgba(25, 118, 210, 0.1);
+    transform: translateY(-2px) scale(1.01);
+  }
+
+  img {
+    width: 180px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.07);
+    background: #eee;
+  }
+
+  .video-info {
+    flex: 1;
+    min-width: 0;
+
+    h3 {
+      font-size: 17px;
+      margin: 0 0 8px 0;
+      font-weight: 600;
+      color: #222;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .channel {
+      margin: 0 0 4px 0;
+      font-size: 13px;
+      color: #1976d2;
+      font-weight: 500;
+    }
+
+    p {
+      margin: 0;
+      font-size: 13px;
+      color: #555;
+
+      &.desc {
+        font-size: 12px;
+        color: #777;
+        margin-top: 6px;
+        line-height: 1.5;
+      }
+    }
+  }
+
+  .delete-btn {
+    background: transparent;
+    border: none;
+    font-size: 18px;
+    color: #888;
+    cursor: pointer;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    transition: background 0.2s, color 0.2s;
+    margin-left: 8px;
+
+    &:hover {
+      background: #ffeaea;
+      color: #d32f2f;
+    }
+  }
+}
+
+/* Bên phải (sidebar) */
+.history-sidebar {
+  flex: 1;
+  max-width: 280px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.07);
+  padding: 24px 20px;
+  font-size: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+
+  h3 {
+    display: flex;
+    align-items: center;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 18px;
+
+    .material-icons {
+      font-size: 22px;
+      margin-right: 8px;
+      color: #1976d2;
+    }
+  }
+
+  input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    font-size: 15px;
+    background: #fafafa;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 12px 0;
+
+    li {
+      margin-bottom: 10px;
+      cursor: pointer;
+      padding: 6px 0;
+      border-radius: 6px;
+      transition: background 0.2s;
+
+      &:hover {
+        background: #f1f1f1;
+      }
+    }
+  }
+
+  .extra-links {
+    color: #777;
+
+    p {
+      margin: 8px 0;
+      cursor: pointer;
+
+      &:hover {
+        text-decoration: underline;
+        color: #1976d2;
+      }
+    }
+  }
+}
+
+.no-videos {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 0;
+  color: #888;
+
+  .material-icons {
+    font-size: 48px;
+    margin-bottom: 12px;
+    color: #bbb;
+  }
+
+  p {
+    font-size: 16px;
+    margin: 0;
+  }
+}
+
+@media (max-width: 900px) {
+  .history-container {
+    flex-direction: column;
+    gap: 0;
+    padding: 18px 2vw;
+  }
+
+  .history-sidebar {
+    max-width: 100%;
+    margin-bottom: 24px;
+  }
+
+  .video-item img {
+    width: 120px;
+    height: 68px;
+  }
+}
