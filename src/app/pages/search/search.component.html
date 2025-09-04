@@ -1,1 +1,54 @@
-<p>search works!</p>
+<div class="search-page">
+  <!-- Sử dụng Angular @for, @if và Material button -->
+  <section class="filters">
+    <div class="orders">
+      <mat-chip-listbox [multiple]="false" class="order-chips">
+        <mat-chip-option [selected]="order === 'relevance'" (click)="chooseOrder('relevance')">Liên quan</mat-chip-option>
+        <mat-chip-option [selected]="order === 'date'" (click)="chooseOrder('date')">Mới nhất</mat-chip-option>
+        <mat-chip-option [selected]="order === 'viewCount'" (click)="chooseOrder('viewCount')">Xem nhiều</mat-chip-option>
+        <mat-chip-option [selected]="order === 'rating'" (click)="chooseOrder('rating')">Đánh giá</mat-chip-option>
+        <mat-chip-option [selected]="order === 'title'" (click)="chooseOrder('title')">A→Z</mat-chip-option>
+      </mat-chip-listbox>
+    </div>
+    @if (total > 0) {
+      <div class="meta">Khoảng {{ total | number }} kết quả</div>
+    }
+  </section>
+
+  @if (selectedId) {
+    <div class="player">
+      <div class="player-inner">
+        <iframe [src]="''" frameborder="0" allowfullscreen></iframe>
+        <button mat-icon-button class="close" (click)="closePlayer()"><mat-icon>close</mat-icon></button>
+      </div>
+    </div>
+  }
+
+  @if (loading) {
+    <section class="state">Đang tải…</section>
+  }
+  @if (error; as e) {
+    <section class="state err">⚠️ {{ e }}</section>
+  }
+
+  <section class="grid horizontal-grid">
+    @for (v of items; track v.id) {
+      <div class="yt-video-card horizontal-card">
+        <img [src]="v.thumbnail" alt="Video thumbnail" class="thumb-horizontal">
+        <div class="info-wrap-horizontal">
+          <img [src]="v.avatar" alt="Avatar" class="avatar-horizontal">
+          <div class="info-main-horizontal">
+            <div class="title">{{ v.title }}</div>
+            <div class="channel">{{ v.channel }}</div>
+            <div class="meta">{{ v.views | number }} lượt xem • {{ v.publishedAt }}</div>
+          </div>
+        </div>
+      </div>
+    }
+  </section>
+
+  <footer class="pager pager-right">
+    <mat-paginator [length]="total" [pageSize]="10" [pageSizeOptions]="[5, 10, 20]" (page)="onPageChange($event)"></mat-paginator>
+  </footer>
+
+</div>
