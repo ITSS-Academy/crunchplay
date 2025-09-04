@@ -1,0 +1,28 @@
+<h2 mat-dialog-title>Tạo danh sách phát mới</h2>
+<mat-dialog-content>
+  <mat-form-field appearance="outline" class="w-full">
+    <mat-label>Title</mat-label>
+    <input matInput [(ngModel)]="title" placeholder="Add your title" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="w-full">
+    <mat-label>Mô tả</mat-label>
+    <textarea matInput rows="3" [(ngModel)]="description" placeholder="Thêm mô tả"></textarea>
+  </mat-form-field>
+
+  <div class="flex items-center gap-4 mt-4">
+    <span>Chế độ hiển thị</span>
+    <mat-radio-group [(ngModel)]="visibility" class="flex gap-4">
+      <mat-radio-button value="public">Public</mat-radio-button>
+      <mat-radio-button value="private">Private</mat-radio-button>
+    </mat-radio-group>
+  </div>
+
+  <mat-dialog-actions align="end" class="mt-6">
+    <button mat-stroked-button (click)="onCancel()">Cancel</button>
+    <button mat-flat-button color="primary" (click)="onCreate()">
+      <mat-icon fontSet="material-symbols-outlined">add</mat-icon>
+      Create
+    </button>
+  </mat-dialog-actions>
+</mat-dialog-content>

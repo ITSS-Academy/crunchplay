@@ -1,1 +1,66 @@
-<p>history works!</p>
+<div class="history-container">
+  <!-- Sidebar -->
+  <aside class="history-sidebar">
+    <h3><span class="material-icons">history</span> Nhật ký xem</h3>
+    <input type="text" placeholder="Tìm kiếm trong danh sách video ..." />
+    <ul>
+      <li>🗑 Xoá tất cả nhật ký xem</li>
+      <li>⏸ Tạm dừng lưu nhật ký xem</li>
+      <li>⚙️ Quản lý toàn bộ nhật ký hoạt động</li>
+    </ul>
+    <div class="extra-links">
+      <p>Bình luận</p>
+      <p>Bài đăng</p>
+      <p>Trò chuyện trực tiếp</p>
+    </div>
+  </aside>
+
+
+  <!-- Danh sách video -->
+  <main class="history-list">
+    <div class="history-header">
+      <span class="material-icons history-icon">history</span>
+      <h2>Nhật ký xem</h2>
+    </div>
+
+    <div class="filter-tabs">
+      <button [class.active]="selectedTab === 'all'" (click)="setTab('all')">Tất cả</button>
+      <button [class.active]="selectedTab === 'video'" (click)="setTab('video')">Video</button>
+      <button [class.active]="selectedTab === 'music'" (click)="setTab('music')">Âm nhạc</button>
+      <button [class.active]="selectedTab === 'podcast'" (click)="setTab('podcast')">Podcast</button>
+      <button [class.active]="selectedTab === 'shorts'" (click)="setTab('shorts')">Shorts</button>
+    </div>
+
+    <div class="day-label">Thứ Hai</div>
+
+    <div style="color: #d32f2f; font-size: 13px; margin-bottom: 8px;">
+      Số lượng video: {{ filteredVideos().length }}
+
+
+    </div>
+    @if (filteredVideos().length > 0){
+      <ng-container>
+        @for (video of filteredVideos(); track $index) {
+          <div class="video-item" >
+            <img [src]="video.thumbnail" alt="thumbnail" />
+            <div class="video-info">
+              <h3>{{ video.title }}</h3>
+              <p class="channel">{{ video.channel }} • {{ video.views }}</p>
+              <p class="desc">{{ video.desc }}</p>
+            </div>
+            <button class="delete-btn" title="Xoá khỏi lịch sử">✕</button>
+          </div>
+        }
+      </ng-container>
+
+    } @else {
+      <ng-template #noVideos>
+        <div class="no-videos">
+          <span class="material-icons">hourglass_empty</span>
+          <p>Không có video nào để hiển thị.</p>
+        </div>
+      </ng-template>
+    }
+
+  </main>
+</div>
