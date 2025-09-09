@@ -95,7 +95,10 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   private loadMore() {
     console.log('Loading more videos...');
-    this.store.dispatch(VideoActions.getLatestVideos({page: this.page,}));
-    this.page += 1
+    console.log(this.isGettingLatest, this.canGetMoreLatest);
+    if (!this.isGettingLatest && this.canGetMoreLatest) {
+      this.page += 1;
+      this.store.dispatch(VideoActions.getLatestVideos({page: this.page}))
+    }
   }
 }

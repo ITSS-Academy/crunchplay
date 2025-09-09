@@ -10,6 +10,21 @@
       <h1>{{ this.headerTitle }}</h1>
     </div>
 
+    <form class="search" (ngSubmit)="onSearch()">
+      <input
+        class="search__input"
+        type="search"
+        placeholder="Search"
+        [(ngModel)]="searchQuery"
+        name="searchQuery"
+        (keydown.enter)="onSearch()"
+        aria-label="Search"
+      />
+      <mat-icon matSuffix>search</mat-icon>
+
+
+    </form>
+
     <div>
       <button mat-flat-button class="create-btn"
               #createMenuTrigger="matMenuTrigger"

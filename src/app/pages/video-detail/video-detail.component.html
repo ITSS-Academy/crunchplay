@@ -27,8 +27,8 @@
               </div>
               <div class="video-actions">
                 @if (!(isGettingLikeCommentCount$ | async)) {
-                  @if (!video.isLikedByUser) {
-                    <button mat-button (click)="likeVideo()">
+                  @if (!video.isLikedByCurrentUser) {
+                    <button mat-button [disabled]="isLiking$ | async" (click)="toggleLike()">
                       <mat-icon
                         fontSet="material-symbols-outlined"
                       >thumb_up
@@ -39,7 +39,7 @@
                         }}</span>
                     </button>
                   } @else {
-                    <button mat-button color="primary" (click)="unlikeVideo()">
+                    <button mat-button [disabled]="isLiking$ | async" color="primary" (click)="unlikeVideo()">
                       <mat-icon
                       >thumb_up
                       </mat-icon>
@@ -140,7 +140,7 @@
             <div #recommendedVideosContainer [ngClass]="{'hidden': showComments || showDescriptionDetail}"
                  class="sidebar-recommended-wrapper" style="height: 100%;">
               @for (recVideo of recommendedVideos; track $index) {
-                <div class="recommended-item">
+                <div class="recommended-item" routerLink="/video-detail/{{ recVideo.id }}">
                   <div class="thumbnail-container">
                     <img [src]="convertToSupabaseUrl(recVideo.thumbnailPath, 'thumbnail') " alt="Thumbnail"
                          class="recommended-thumbnail">
@@ -181,9 +181,11 @@
               <div class="sidebar-comment-input">
                 <mat-form-field appearance="outline" style="width:100%;">
                   <input matInput placeholder="Nhập bình luận..." [(ngModel)]="newComment">
+                  <button matSuffix mat-icon-button (click)="addComment()" [disabled]="!newComment.trim()"
+                          aria-label="Search">
+                    <mat-icon>send</mat-icon>
+                  </button>
                 </mat-form-field>
-                <button mat-raised-button color="primary" (click)="addComment()" [disabled]="!newComment.trim()">Gửi
-                </button>
               </div>
             </div>
             <div [ngClass]="{'hidden': !showDescriptionDetail}" class="sidebar-description-overlay">

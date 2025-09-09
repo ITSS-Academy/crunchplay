@@ -44,7 +44,7 @@ export class PlayerComponent implements AfterViewInit, OnDestroy {
       const player = new Plyr(video, {
         controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'fullscreen'],
         settings: ['quality', 'speed'],
-        autoplay: true,
+        autoplay: false,
         previewThumbnails: {
           src: this.posterSrc,
           enabled: false

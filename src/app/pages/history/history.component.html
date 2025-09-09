@@ -2,7 +2,7 @@
   <!-- Sidebar -->
   <aside class="history-sidebar">
     <h3><span class="material-icons">history</span> Nhật ký xem</h3>
-    <input type="text" placeholder="Tìm kiếm trong danh sách video ..." />
+    <input type="text" placeholder="Tìm kiếm trong danh sách video ..."/>
     <ul>
       <li>🗑 Xoá tất cả nhật ký xem</li>
       <li>⏸ Tạm dừng lưu nhật ký xem</li>
@@ -38,11 +38,13 @@
 
 
     </div>
-    @if (filteredVideos().length > 0){
-      <ng-container>
+
+
+    @if (filteredVideos().length > 0) {
+      <div class="video-wrapper">
         @for (video of filteredVideos(); track $index) {
-          <div class="video-item" >
-            <img [src]="video.thumbnail" alt="thumbnail" />
+          <div class="video-item">
+            <img [src]="video.thumbnail" alt="thumbnail"/>
             <div class="video-info">
               <h3>{{ video.title }}</h3>
               <p class="channel">{{ video.channel }} • {{ video.views }}</p>
@@ -51,7 +53,7 @@
             <button class="delete-btn" title="Xoá khỏi lịch sử">✕</button>
           </div>
         }
-      </ng-container>
+      </div>
 
     } @else {
       <ng-template #noVideos>

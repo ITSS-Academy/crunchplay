@@ -22,7 +22,8 @@ export interface VideoModel {
   profile?: ProfileModel
   likeCount?: number;
   commentCount?: number;
-  isLikedByUser?: boolean;
+  isLikedByCurrentUser?: boolean;
+  isSavedByCurrentUser: boolean;
   videoPath: string;
 }
 

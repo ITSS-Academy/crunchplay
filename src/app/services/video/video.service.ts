@@ -211,23 +211,23 @@ export class VideoService {
       }))
   }
 
-  getLikesComments(videoId: string) {
-    return from(this.getAccessToken()).pipe(
-      mergeMap((data) => {
-        let headers: HttpHeaders | undefined = undefined;
-        if (data.data.session && !data.error) {
-          headers = new HttpHeaders({
-            Authorization: `${data.data.session.access_token}`
-          });
-        }
-        return this.http.get<{
-          likesCount: number,
-          isLiked: boolean,
-          comments: any[],
-          commentsCount: number,
-        }>(`${environment.api_base_url}/video/likes-comments/${videoId}`, {
-          headers
-        });
-      }))
+  async getLikeCommentCount(videoId: string) {
+    let headers = {};
+    const {data, error} = await supabase.auth.getSession();
+    if (!error && data.session) {
+      headers = {
+        Authorization: `${data.session.access_token}`
+      }
+    }
+
+    const res = await this.http.get<{
+      likesCount: number,
+      isLiked: boolean,
+      isSave: boolean,
+      commentsCount: number
+    }>(`${environment.api_base_url}/video/likes-comments-playlists/${videoId}`, {
+      headers: headers
+    }).toPromise();
+    return res
   }
 }

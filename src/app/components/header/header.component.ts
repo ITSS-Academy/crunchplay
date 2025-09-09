@@ -7,6 +7,9 @@ import {MatMenu, MatMenuItem, MatMenuTrigger, MatMenuModule} from '@angular/mate
 import {MatDialog, MatDialogModule} from '@angular/material/dialog';
 import {AuthService} from '../../services/auth/auth.service';
 import {LoginDialogComponent} from '../login-dialog/login-dialog.component';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import {FormsModule} from '@angular/forms';
 
 @Component({
   selector: 'app-header',
@@ -20,8 +23,10 @@ import {LoginDialogComponent} from '../login-dialog/login-dialog.component';
     MatMenuItem,
     MatDialogModule,
     MatMenuModule,
-
+    MatFormFieldModule,
+    MatInputModule,
     RouterLink,
+    FormsModule,
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
@@ -32,6 +37,7 @@ export class HeaderComponent {
   headerTitle: string = '';
   canOpenCreateMenu = false;
   @ViewChild('createMenuTrigger', {static: false}) createMenuTrigger?: MatMenuTrigger;
+  searchQuery: string = '';
 
   constructor(
     private router: Router,
@@ -69,5 +75,11 @@ export class HeaderComponent {
   logOut() {
     this.authService.logout();
     this.router.navigate(['/']);
+  }
+
+  onSearch() {
+    if (this.searchQuery && this.searchQuery.trim()) {
+      this.router.navigate(['/search'], {queryParams: {q: this.searchQuery.trim()}});
+    }
   }
 }

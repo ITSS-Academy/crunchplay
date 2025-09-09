@@ -3,11 +3,11 @@ import {PlayerComponent} from '../../components/player/player.component';
 import {Store} from '@ngrx/store';
 import {VideoState} from '../../ngrx/states/video.state';
 import {VideoModel} from '../../models/video.model';
-import {Observable, Subscription} from 'rxjs';
+import {combineLatest, map, Observable, Subscription} from 'rxjs';
 import {AsyncPipe, DatePipe, NgClass, NgStyle, SlicePipe} from '@angular/common';
 import {convertToSupabaseUrl} from '../../utils/img-converter';
 import * as VideoActions from '../../ngrx/actions/video.actions';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, RouterLink} from '@angular/router';
 import {MatCardModule} from '@angular/material/card';
 import {MatButtonModule} from '@angular/material/button';
 import {MatFormFieldModule} from '@angular/material/form-field';
@@ -15,6 +15,8 @@ import {MatInputModule} from '@angular/material/input';
 import {FormsModule} from '@angular/forms';
 import {MatIconModule} from '@angular/material/icon';
 import {DurationPipe} from '../../pipes/duration.pipe';
+import {LikeVideoState} from '../../ngrx/states/like-video.state';
+import * as LikeVideoActions from '../../ngrx/actions/like-video.actions';
 
 @Component({
   selector: 'app-video-detail',
@@ -31,7 +33,8 @@ import {DurationPipe} from '../../pipes/duration.pipe';
     SlicePipe,
     NgClass,
     NgStyle,
-    DurationPipe
+    DurationPipe,
+    RouterLink
   ],
   templateUrl: './video-detail.component.html',
   styleUrl: './video-detail.component.scss'
@@ -46,13 +49,17 @@ export class VideoDetailComponent implements OnInit, OnDestroy, AfterViewInit {
 
   isGettingNextVideos$: Observable<boolean>
 
+  isLiking$: Observable<boolean>;
+
+
   aspectRatioToUse = '16/9';
   maxVideoHeight = 0.7; // 70% of viewport height
   @ViewChild('videoContainer') videoContainerRef?: ElementRef<HTMLDivElement>;
 
   constructor(
     private store: Store<{
-      video: VideoState
+      video: VideoState,
+      likeVideo: LikeVideoState
     }>,
     private activatedRoute: ActivatedRoute,
   ) {
@@ -63,12 +70,28 @@ export class VideoDetailComponent implements OnInit, OnDestroy, AfterViewInit {
     this.isGettingVideoById$ = this.store.select(state => state.video.isGetVideoById);
     this.store.dispatch(VideoActions.getVideoById({videoId: videoId as string}));
     this.store.dispatch(VideoActions.getNextVideos({videoId: videoId as string, page: 0}));
-    this.store.dispatch(VideoActions.getLikeCommentCount({videoId: videoId as string}));
+    this.store.dispatch(VideoActions.getLikedVideos({videoId: videoId as string}));
 
+
+    this.isLiking$ = combineLatest([
+      this.store.select(state => state.likeVideo.isAdding),
+      this.store.select(state => state.likeVideo.isDeleting)
+    ]).pipe(
+      map(([isAdding, isDeleting]) => isAdding || isDeleting)
+    );
   }
 
   ngOnInit() {
     this.subscriptions.push(
+      this.activatedRoute.paramMap.subscribe(paramMap => {
+        const videoId = paramMap.get('videoId');
+        if (videoId) {
+          this.store.dispatch(VideoActions.clearVideoState());
+          this.store.dispatch(VideoActions.getVideoById({videoId}));
+          this.store.dispatch(VideoActions.getNextVideos({videoId, page: 0}));
+          this.store.dispatch(VideoActions.getLikedVideos({videoId}));
+        }
+      }),
       this.videoDetail$.subscribe(video => {
         console.log(video)
       }),
@@ -76,8 +99,20 @@ export class VideoDetailComponent implements OnInit, OnDestroy, AfterViewInit {
         if (videos) {
           this.recommendedVideos = videos;
         }
+      }),
+      this.store.select(state => state.likeVideo.isAddSuccess).subscribe(likeVideo => {
+        const videoId = this.activatedRoute.snapshot.paramMap.get('videoId');
+        if (likeVideo && videoId) {
+          this.store.dispatch(VideoActions.getLikeCount({videoId}));
+        }
+      }),
+      this.store.select(state => state.likeVideo.isDeleteSuccess).subscribe(unlikeVideo => {
+        const videoId = this.activatedRoute.snapshot.paramMap.get('videoId');
+        if (unlikeVideo && videoId) {
+          this.store.dispatch(VideoActions.getLikeCount({videoId}));
+        }
       })
-    )
+    );
   }
 
   ngAfterViewInit() {
@@ -165,10 +200,6 @@ export class VideoDetailComponent implements OnInit, OnDestroy, AfterViewInit {
     console.log('Subscribed to', this.video.profile.username);
   }
 
-  likeVideo() {
-    console.log('Liked video');
-  }
-
   openDescriptionDetail() {
     if (this.showDescriptionDetail) {
       this.showDescriptionDetail = false
@@ -220,7 +251,13 @@ export class VideoDetailComponent implements OnInit, OnDestroy, AfterViewInit {
     return '16/9';
   }
 
-  unlikeVideo() {
+  toggleLike() {
+    const videoId = this.activatedRoute.snapshot.paramMap.get('videoId');
+    this.store.dispatch(LikeVideoActions.createLikeVideo({videoId: videoId as string}));
+  }
 
+  unlikeVideo() {
+    const videoId = this.activatedRoute.snapshot.paramMap.get('videoId');
+    this.store.dispatch(LikeVideoActions.deleteLikeVideo({videoId: videoId as string}));
   }
 }

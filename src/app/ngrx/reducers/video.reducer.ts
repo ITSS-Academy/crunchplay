@@ -35,6 +35,10 @@ const initialState: VideoState = {
   isGettingLikeComments: false,
   isGetLikeCommentsSuccess: false,
   isGetLikeCommentsError: null,
+
+  isGettingLiked: false,
+  isGettingLikedSuccess: false,
+  isGettingLikedError: null,
 }
 
 export const videoReducer = createReducer(
@@ -129,10 +133,11 @@ export const videoReducer = createReducer(
     }
   }),
   on(VideoActions.getLatestVideosSuccess, (state, {videos, totalCount}) => {
+    console.log(state.latestVideos.length, totalCount);
     return {
       ...state,
       latestVideos: [...state.latestVideos, ...videos],
-      canGetMoreLatest: state.latestVideos.length < totalCount,
+      canGetMoreLatest: state.latestVideos.length + videos.length < totalCount,
       isGettingLatest: false,
       isGetLatestSuccess: true,
       isGetLatestError: null,
@@ -233,37 +238,67 @@ export const videoReducer = createReducer(
       isGetLatestError: error,
     }
   }),
-  on(VideoActions.getLikeCommentCount, (state, {type}) => {
-    console.log(type);
-    return <VideoState>{
+  on(VideoActions.getLikedVideos, (state, {videoId}) => {
+    return {
       ...state,
       isGettingLikeComments: true,
       isGetLikeCommentsSuccess: false,
       isGetLikeCommentsError: null,
     }
   }),
-  on(VideoActions.getLikeCommentCountSuccess, (state, {video}) => {
-    console.log(video);
-    return <VideoState>{
+  on(VideoActions.getLikedVideosSuccess, (state, {likesCount, isLiked, isSave, commentsCount}) => {
+    return {
       ...state,
-      videoDetail: {
+      videoDetail: <VideoModel>{
         ...state.videoDetail,
-        likeCount: video.likeCount,
-        commentCount: video.commentCount,
-        isLikedByUser: video.isLiked,
+        likeCount: likesCount,
+        isLikedByCurrentUser: isLiked,
+        isSavedByCurrentUser: isSave,
+        commentCount: commentsCount,
       },
       isGettingLikeComments: false,
       isGetLikeCommentsSuccess: true,
       isGetLikeCommentsError: null,
     }
   }),
-  on(VideoActions.getLikeCommentCountFailure, (state, {error, type}) => {
-    console.log(type);
-    return <VideoState>{
+  on(VideoActions.getLikedVideosFailure, (state, {error}) => {
+    return {
       ...state,
       isGettingLikeComments: false,
       isGetLikeCommentsSuccess: false,
       isGetLikeCommentsError: error,
+    }
+  }),
+  on(VideoActions.getLikeCount, (state, {videoId, type}) => {
+    console.log(type);
+    return {
+      ...state,
+      isGettingLiked: true,
+      isGettingLikedSuccess: false,
+      isGettingLikedError: null,
+    }
+  }),
+  on(VideoActions.getLikeCountSuccess, (state, {likesCount, isLiked, type}) => {
+    console.log(type);
+    return {
+      ...state,
+      videoDetail: <VideoModel>{
+        ...state.videoDetail,
+        likeCount: likesCount,
+        isLikedByCurrentUser: isLiked,
+      },
+      isGettingLiked: false,
+      isGettingLikedSuccess: true,
+      isGettingLikedError: null,
+    }
+  }),
+  on(VideoActions.getLikeCountFailure, (state, {error, type}) => {
+    console.log(type);
+    return {
+      ...state,
+      isGettingLiked: false,
+      isGettingLikedSuccess: false,
+      isGettingLikedError: error,
     }
   })
 );

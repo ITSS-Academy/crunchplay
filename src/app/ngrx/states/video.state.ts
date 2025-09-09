@@ -32,4 +32,9 @@ export interface VideoState {
   isGettingLikeComments: boolean,
   isGetLikeCommentsSuccess: boolean,
   isGetLikeCommentsError: any,
+
+  isGettingLiked: boolean
+  isGettingLikedSuccess: boolean
+  isGettingLikedError: any,
+
 }
